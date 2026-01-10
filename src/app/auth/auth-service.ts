@@ -7,7 +7,7 @@ import { tap } from 'rxjs';
 })
 export class AuthService {
   constructor(private http:HttpClient) { }
-  baseurl = 'http://localhost:6161/auth/login';
+  baseurl = 'https://directpost.apirest.pro/api/auth/login';
  // auth.service.ts
 login(credentials: {username: string, password: string}) {
   return this.http.post<{token: string}>(this.baseurl, credentials)

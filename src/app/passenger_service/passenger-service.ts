@@ -16,7 +16,7 @@ export class PassengerService {
 constructor(private http: HttpClient) { }
 
   getPassengerData() {
-    const baserUrl='http://localhost:6161/operation/passenger';
+    const baserUrl='https://directpost.apirest.pro/api/operation/passenger';
     return this.http.get<Operation>(baserUrl+'/new');
   }  
 }
