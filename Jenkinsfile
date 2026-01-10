@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker build --tag direct_post_front .'
-                    sh 'docker run -d --name direct_post_front -p 8082:8082 direct_post_front'
+                    sh 'docker run -d --name direct_post_front --network host direct_post_front'
                 }
             }
         }
