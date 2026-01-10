@@ -1,0 +1,275 @@
+
+    <div class="container-fluid mb-0 p-0">
+ <form autocomplete="off" id="deliveryForm" class="w-100">
+<h2 class="text-center my-4 fw-bold text-primary">
+  {{ op_id() }}
+</h2>    <input type="hidden" id="operationId" name="operationId"/>
+    <div class="card shadow-sm border-0 mb-2 border-start border-primary border-4">
+        <div class="card-header border-0 py-1 bg-primary d-flex align-items-center">
+            <h6 class="mb-0 text-light fw-bold" style="font-size: 0.8rem;"><i class="bi bi-person-up me-1"></i>EXPÉDITEUR</h6>
+        </div>
+        <div class="card-body py-2">
+            <div class="row g-1">
+                <div class="col-md-2"><label for="senderTel">Téléphone</label><input id="senderTel" name="sender.sendTel" type="tel" class="form-control form-control-sm" placeholder="Téléphone" ></div>
+                <div class="col-md-3"><label for="senderName">Nom Complet</label><input id="senderName" name="sender.sendName" type="text" class="form-control form-control-sm" placeholder="Nom Complet"></div>
+                <div class="col-md-3"><label for="sendSocialReason">Raison Sociale</label><input id="sendSocialReason" name="sender.sendSocialReason" type="text" class="form-control form-control-sm" placeholder="Raison Sociale"></div>
+                <div class="col-md-4"><label for="senderAdress">Adresse</label><input id="senderAdress" name="sender.adress" type="text" class="form-control form-control-sm" placeholder="Adresse"></div>
+                <div class="col-md-2"><label for="senderVille">Ville</label><input id="senderVille" name="sender.city" type="text" class="form-control form-control-sm" placeholder="Ville"></div>
+                <div class="col-md-2"><label for="senderPostal">Code Postal</label><input id="senderPostal" name="sender.postalCode" type="text" class="form-control form-control-sm" placeholder="CP"></div>
+                <div class="col-md-1"><label for="senderCountry">Gouvernorat</label><input id="senderCountry" name="sender.country" value="Tunisie" class="form-control form-control-sm bg-light" readonly></div>
+              <div class="col-md-2"><label for="sendEmail">Email</label><input id="sendEmail" name="sender.sendEmail" type="email" class="form-control form-control-sm" placeholder="Email"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-2 border-start border-warning border-4">
+        <div class="card-header border-0 py-1 bg-warning d-flex align-items-center">
+            <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.8rem;"><i class="bi bi-person-down me-1 text-success"></i>DESTINATAIRE</h6>
+        </div>
+        <div class="card-body py-2">
+            <div class="row g-1">
+                <div class="col-md-1">
+                    <label for="recCountry">Pays</label>
+                    <select id="recCountry" name="receiver.country" class="form-select form-select-sm">
+                        <option value="Tunisie" selected>Tunisie</option>
+                        <option value="Algeria">Algérie</option>
+                        <option value="Qatar">Qatar</option>
+                        <option value="France">France</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Ukraine">Ukraine</option>
+                        <option value="Brazil">Brésil</option>
+                        <option value="China">Chine</option>
+                    </select>
+                </div>
+                <div class="col-md-2"><label for="receiverName">Nom et Prénom</label> <input id="receiverName" name="receiver.recName" type="text" class="form-control form-control-sm" placeholder="Nom" required></div>
+                <div class="col-md-2"><label for="recSocialraison">Raison Sociale</label><input id="recSocialraison" name="receiver.recSocialReason" type="text" class="form-control form-control-sm" placeholder="Raison Sociale"></div>
+                <div class="col-md-3"><label for="receiverAdress">Adresse</label><input id="receiverAdress" name="receiver.adress" type="text" class="form-control form-control-sm" placeholder="Adresse" required></div>
+                <div class="col-md-2"><label for="receiverVille">Ville</label><input id="receiverVille" name="receiver.ville" type="text" class="form-control form-control-sm" placeholder="Ville" required></div>
+                 <div class="col-md-2"><label for="gouvernorat">Gouvernorat</label><input id="gouvernorat"  type="text" class="form-control form-control-sm" placeholder="Gouvernorat" required></div>
+                <div class="col-md-2"><label for="receiverPostal">Code Postal</label><input id="receiverPostal" name="receiver.postalCode" type="text" class="form-control form-control-sm" placeholder="CP"></div>
+                <div class="col-md-2"><label for="receiverTel">Téléphone</label><input id="receiverTel" name="receiver.recTel" type="tel" class="form-control form-control-sm" placeholder="Téléphone" ></div>
+                <div class="col-md-2"><label for="receiverMail">Email</label><input id="receiverMail" name="receiver.recEmail" type="email" class="form-control form-control-sm" placeholder="Email" ></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm bg-light mb-2">
+        <div class="card-body py-2">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-3">
+                    <div class="btn-group w-100 shadow-sm">
+                        <input type="radio" class="btn-check" name="btnradio" id="btncheck1" value="EMS National" >
+                        <label class="btn btn-outline-primary btn-sm fw-bold" id="labelEmsNat" for="btncheck1">EMS NAT</label>
+                        
+                        <input type="radio" class="btn-check" name="btnradio" id="btncheck3" value="RPPI" >
+                        <label class="btn btn-outline-warning btn-sm fw-bold text-dark d-none" id="labelRppi" for="btncheck3">RPPI</label>
+                        
+                        <input type="radio" class="btn-check" name="btnradio" id="btncheck2" value="EMS International" >
+                        <label class="btn btn-outline-info btn-sm fw-bold d-none" id="labelEmsInt" for="btncheck2">EMS INT</label>
+                        
+                        <input type="radio" class="btn-check" name="btnradio" id="btncheck4" value="Bouquet de fleurs" >
+                        <label class="btn btn-outline-success btn-sm fw-bold" id="labelFleurs" for="btncheck4">FLEURS</label>
+                    </div>
+                </div>
+
+                <div class="col-md-2" id="typeappelofre">
+                    <select id="itemTypeoffre" name="typeOffre" class="form-select form-select-sm border-primary">
+                        <option value="Normal">Normal</option>
+                        <option value="Appel">Appel d'offre</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-none" id="typeContainer">
+                    <select id="itemType" name="typeItem" class="form-select form-select-sm border-info" >
+                        <option value="Document">Document</option>
+                        <option value="Marchandise">Marchandise</option>
+                    </select>
+                </div>
+<br>
+                <div id="dimensionsContainer" class="col-md-auto d-none">
+    <div class="d-flex align-items-end bg-light p-2 rounded border">
+        
+        <div class="me-3 d-flex">
+            <label style="padding-right: 5%;" for="quantity" class="form-label small fw-bold mb-1">Qté</label>
+            <input  id="quantity" name="quantity" type="number" 
+                   class="form-control bg-info form-control-sm text-center" 
+                   style="width: 60px;" value="1" min="1">
+        </div>
+
+        <div class="ps-3 border-start border-2 d-flex">
+            <label style="padding-right: 5%;" class="form-label small fw-bold mb-1 text-muted">Dim</label>
+            <div class="d-flex gap-1">
+                <input id="longeur" name="length" type="number" 
+                       class="form-control form-control-sm" 
+                       placeholder="Long." style="width: 60px;">
+                
+                
+                <input id="largeur" name="width" type="number" 
+                       class="form-control form-control-sm" 
+                       placeholder="Larg." style="width: 60px;">
+                
+                
+                <input id="hauteur" name="height" type="number" 
+                       class="form-control form-control-sm" 
+                       placeholder="Haut." style="width: 60px;">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+                <div class="col-md-1">
+                    <div class="input-group input-group-sm">
+                        <!-- name="weight" correspond à private Double weight; -->
+                        <input type="number" step="0.1" name="weight" id="parcelWeight" class="form-control border-primary fw-bold" placeholder="KG">
+                        <span class="input-group-text bg-primary text-white p-1">KG</span>
+                    </div>
+                </div>
+
+                <div id="btnFactureContainer" class="col-md-1 d-none">
+                    <button type="button" class="btn btn-outline-warning btn-sm w-70 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#factureModal">
+                        <i class="bi bi-receipt"></i> FACTURE
+                    </button>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-center justify-content-end">
+                    <!-- CHAMP CACHÉ POUR LE PRIX - name="price" correspond à private Double price; -->
+                    <input type="hidden" id="parcelPrice" name="price" value="0">
+                    
+                    <!-- Affichage visuel du prix -->
+                    <span id="pricezone" class="fw-bold text-primary me-2">0.000 DT</span>
+                    
+                    <button type="button" id="btnValider"  class="btn btn-success btn-sm px-3 fw-bold shadow-sm">VALIDER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="factureModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white p-2">
+                <h6 class="modal-title">Saisie de la Facture</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="factureDetail" class="form-control mb-2" rows="3" placeholder="Description des articles..."></textarea>
+                <input type="number" id="factureVal" class="form-control" placeholder="Valeur estimée (DT)">
+            </div>
+            <div class="modal-footer p-1">
+                <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+<div class="card border-0 shadow-sm bg-light mb-4" style="max-width: 600px;">
+    <form id="pochetteForm">
+    <div class="card-body py-2">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-3">
+                <label for="pochette" class="form-label mb-0 fw-bold">Type de pochette</label>
+            </div>
+            
+            <div class="col-md-9">
+                <div class="d-flex gap-2 align-items-center">
+                    <!-- Sélecteur de type -->
+                    <select id="pochette" class="form-select form-select-sm" style="min-width: 180px;">
+                        <option value="" disabled selected>Choisir le type de pochette</option>
+                        <option value="pn">Pochette National</option>
+                        <option value="pnpm">Pochette International PM</option>
+                        <option value="pngm">Pochette International GM</option>
+                        <option value="mat">Pochette matelassé</option>
+                    </select>
+                    
+                    <!-- Quantité -->
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="small text-nowrap">Qté:</span>
+                        <input id="quantitePochette" type="number"  class="form-control form-control-sm"     style="width: 70px;"    min="1" value="1"/>
+                    </div>
+                    
+                    <!-- Bouton Ajouter -->
+                    <button title="Ajouter" type="button" class="btn btn-primary  ms-2">
+Ajouter                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+        <div class="row mt-5" id="sessionContainer" style="display:none;">
+            <div class="col-12">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-light text-dark d-flex justify-content-between align-items-center py-3">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-collection me-2 text-warning"></i>Mode de payment</h5>
+                        <select id="sessionFilter" class="form-select form-select-sm w-auto">
+                            
+                            <option value="thisWeek">Espèce</option>
+                            <option value="thisMonth">Chèque</option>
+                        </select>
+                        <div>
+                            <label >Banque</label>
+                            <input>
+                            <label >N° de chèque</label>
+                            <input>
+                        </div>
+                        <button type="button" class="btn btn-outline-warning btn-lg px-5 shadow">
+                            <i class="bi bi-printer-fill me-2"></i>Confirmer
+                        </button>
+                    
+                        <span class="badge bg-primary px-3 py-2 fs-6" id="colisCount">0 Colis</span>
+                    </div>
+                    <div class="card-body p-0">
+                         
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="sessionTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">N° Suivi</th>
+                                        <th>Destinataire</th>
+                                        <th>Poids</th>
+                                        <th>Mode</th>
+                                        <th>Prix</th>
+                                        <th class="text-end pe-4">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    </tbody>
+                                <tfoot class="table-light fw-bold">
+                                    <tr>
+                                        <td colspan="4" class="text-end ps-4">TOTAL OPERATION :</td>
+                                        <td id="totalSession" class="text-primary">0.000 DT</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation du dépôt</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Souhaitez-vous confirmer cet envoi ?
+                </div>
+                <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+    <button type="button" class="btn btn-success btn-lg" >
+        <i class="bi bi-printer me-2"></i> Valider et Imprimer l'étiquette
+    </button>
+</div>
+            </div>
+        </div>
+
+</div>
