@@ -19,7 +19,7 @@ RUN chown -R nginx:nginx /var/log/nginx
 COPY mime.types /etc/nginx/mime.types
 COPY proxy.conf /etc/nginx/proxy.conf
 
-COPY --from=build /app/dist/presence-angular/browser /usr/share/nginx/html
+COPY --from=build /app/dist/DirectPOST/browser /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
