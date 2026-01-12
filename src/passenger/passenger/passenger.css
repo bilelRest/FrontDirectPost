@@ -1,0 +1,38 @@
+/* Container de suggestions flottant */
+.suggestion-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 1060;
+    border: 1px solid #dee2e6;
+    max-height: 250px;
+    overflow-y: auto;
+    margin-top: 2px;
+}
+
+/* Item de suggestion */
+.suggestion-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #f8f9fa;
+    transition: background 0.2s;
+}
+
+.suggestion-item:hover {
+    background-color: #e8f0fe; /* Le bleu clair de Chrome */
+}
+
+/* Labels modernes */
+.form-label {
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+/* Ombre douce pour les inputs */
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    border-color: #0d6efd;
+}

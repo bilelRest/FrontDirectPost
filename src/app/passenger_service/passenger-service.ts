@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 export interface Operation {
   opId: number;
   formattedId: string;
@@ -9,14 +10,100 @@ export interface Operation {
   parcel: any[];
   pochette: any[];
 }
+export interface Parcel {
+  parcelId?: number;          // Optionnel car généré par le backend
+  createdAt: string | Date;   // LocalDate arrive souvent en string ISO (2026-01-12)
+  width: number;
+  height: number;
+  lenght: number;             // Gardé avec la faute d'orthographe pour matcher ton Java
+  price: number;
+  weight: number | null ;
+  deleted: boolean;
+  
+  // Relations (Objets imbriqués)
+  operation?: Operation;      // Map vers 'operation' en Java
+  appUser?: AppUser;
+  receiver: Receiver;
+  sender: Sender;
+  trackingNumber?: TrackingNumber;
+}
+export interface Pochette {
+  id?: number;          // Optionnel car généré par le backend
+  createdAt: string | Date;   // LocalDate arrive souvent en string ISO (2026-01-12)
+  quantite:number;            // Gardé avec la faute d'orthographe pour matcher ton Java
+  typePochette:string;
+  totalPrice:number;
+  deleted: boolean;
+  
+  // Relations (Objets imbriqués)
+  operation?: Operation;      // Map vers 'operation' en Java
+  appUser?: AppUser;
+  sender: Sender;
+
+}
+  
+    
+   
+export interface AppUser {
+  userId: number;
+  username: string;
+  email: string;
+  // On ne met généralement pas le password dans l'interface frontend pour la sécurité
+  appRoles: []; 
+}
+export interface TrackingNumber {
+  parcelId?: number;           // Correspond à ton Long parcelId
+  createdAt: string | Date;    // LocalDate est envoyé en String (ISO) par Jackson
+  formattedParcelId: string;   // Ton ID unique pour les recherches
+}
+export interface Sender {
+   sendId:number;
+      sendName:string;
+      sendSocialReason:string;
+      sendTel:number;
+      adress:string;
+      postalCode:number;
+      city:string;
+      country:string;
+      sendEmail:string;
+    createdAt:Date;
+}
+export interface Receiver {
+   recId:number;
+      recName:string;
+      recSocialReason:string;
+      recTel:number;
+      adress:string;
+      postalCode:number;
+      city:string;
+      country:string;
+      recEmail:string;
+    createdAt:Date;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class PassengerService {
 constructor(private http: HttpClient) { }
-
-  getPassengerData() {
-    const baserUrl='https://directpost.apirest.pro/api/operation/passenger';
-    return this.http.get<Operation>(baserUrl+'/new');
+ //  baserUrl='https://directpost.apirest.pro/api/operation/passenger';
+     baserUrl='http://localhost:6161/api/operation/passenger';
+  loadNewOperation() {
+    return this.http.get<Operation>(this.baserUrl+'/new');
   }  
+  loadSenders(){
+    return this.http.get<Sender[]>(this.baserUrl+'/senders');
+  }
+   loadReceivers(){
+    return this.http.get<Receiver[]>(this.baserUrl+'/receivers');
+  }
+  addParcel(parcel: Parcel, opFormatted: string):Observable<Operation>{
+    return this.http.post<Operation>(this.baserUrl+"/addparcel?op="+opFormatted,parcel)
+  }
+  
+  addPochetteToOperation(op:string,pochette:Pochette):Observable<Operation>{
+    return this.http.post<Operation>(this.baserUrl+"/addpochette?op="+op,pochette)
+  }
+  getOpeartionContent(numop:string):Observable<any>{
+    return this.http.get(this.baserUrl+"/parcels?op="+numop);
+  }
 }

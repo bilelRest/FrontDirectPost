@@ -1,21 +1,97 @@
 import { afterNextRender, Component, OnInit, signal } from '@angular/core';
-import { PassengerService } from '../../app/passenger_service/passenger-service';
+import { PassengerService, Receiver, Sender,Operation, Parcel, TrackingNumber, Pochette } from '../../app/passenger_service/passenger-service';
 import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-passenger',
-  standalone: true, // Requis pour utiliser "imports"
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './passenger.html',
   styleUrl: './passenger.css',
 })
+
 export class Passenger implements OnInit {
 
- op_id = signal<string>("Chargement ...");
+  op_id = signal<string>("Chargement ...");
+  opFormatted:string="";
+  senders: Sender[] = [];
+filteredReceivers: Receiver[] = [];
+receivers:Receiver[]=[];
+activeReceiverField: string = '';  filteredSenders: Sender[] = [];
+  activeField: string = '';
+  
+  isNatParcel:boolean=true;
+isMarchandise:boolean=false;
+rppimarchand:boolean=false;
+emsimarchand:boolean=false;
+parcels:Parcel[]=[]
+parcel: Parcel = {
+  width: 0,
+  height: 0,
+  lenght: 0,
+  price: 0,
+  weight: null,
+  deleted: false,
+  createdAt: new Date(),
+  sender: {} as Sender,
+  receiver: {} as Receiver,
+  // Initialisation de l'objet operation pour que le lien existe
+  operation: {
+    formattedId: ''
+  } as Operation, 
+  trackingNumber: {
+    parcelId: 0,
+    createdAt: '', 
+    formattedParcelId: ''
+  } as TrackingNumber,
+};
+pochette: Pochette = {
+  totalPrice: 0,
+  deleted: false,
+  createdAt: new Date(),
+  sender: {} as Sender,
+  // Initialisation de l'objet operation pour que le lien existe
+  operation: {
+    formattedId: ''
+  } as Operation,
+  quantite: 1,
+  typePochette: ''
+};
+prix:number=0;
+weight:any
+  // Objet Expéditeur complet
+  currentSender: any = {
+    sendTel: '',
+    sendName: '',
+    sendSocialReason: '',
+    adress: '',
+    city: '',
+    postalCode: null,
+    country: 'Tunisie',
+    sendEmail: ''
+  };
 
+  // Objet Destinataire complet
+  currentReceiver: any = {
+    country: 'Tunisie',
+    recName: '',
+    recSocialReason: '',
+    adress: '',
+    ville: '',
+    postalCode: '',
+    recTel: '',
+    recEmail: ''
+  };
+  isNat:boolean=true;
+  isFlour:boolean=true;
+  isEmsi:boolean=false;
+  isRppi:boolean=false;
+  overweignt: boolean=false;
+  cheque:boolean=false;
+pochettes:Pochette[]=[]
   constructor(private passenger_service: PassengerService) {
     afterNextRender(() => {
-      // Le setTimeout(0) est l'astuce ultime pour éviter NG0100
       setTimeout(() => {
         this.loadNewOperation();
       }, 0);
@@ -23,19 +99,254 @@ export class Passenger implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('Composant initialisé...');
+    const monForm = new FormGroup({
+    btncheck1: new FormControl(true) // 'true' définit la case comme cochée par défaut
+  });
+    this.loadReceivers();
+    this.loadSenders();
+  }
+  private readonly TARIFS_POCHETTES: { [key: string]: number } = {
+  'pn': 1,    // Pochette National
+  'pnpm': 1.2, // International PM
+  'pngm': 1.5, // International GM
+  'mat': 2    // Matelassée
+};
+modeDePayment(event:any){
+if(event.target.value=="cheque")this.cheque=true;else this.cheque=false;
+
+}
+addPochette(event: any) {
+  event.preventDefault(); 
+ // console.log(this.currentSender)// Empêche le rechargement de la page
+if(this.currentSender.sendName=='' && this.currentSender.sendSocialReason=='' ){
+    alert("Veuillez remplir les données de l\'expediteur :\n Nom complet ou bien raison sociale")
+  }
+  if (!this.pochette.typePochette || this.pochette.quantite <= 0) {
+    alert("Veuillez choisir un type et une quantité valide");
+    return;
   }
 
-  loadNewOperation() {
-    this.passenger_service.getPassengerData().subscribe({
-      next: (data) => {
-        // 2. Utilisez .set() pour mettre à jour la valeur
-        this.op_id.set(data.formattedId);
-      },
-      error: (err) => {
-        console.error('Erreur de communication avec l\'API :', err);
-        this.op_id.set("Erreur de chargement");
+  // Calcul du prix
+  const prixUnitaire = this.TARIFS_POCHETTES[this.pochette.typePochette] || 0;
+  this.pochette.totalPrice = prixUnitaire * this.pochette.quantite;
+  this.pochette.sender=this.currentSender;
+  console.log("Pochette a envoyer  "+this.pochette)
+  this.passenger_service.addPochetteToOperation(this.opFormatted,this.pochette).subscribe({next:data=>{
+    console.log(data)
+    this.pochettes=data.pochette
+  },error:(err)=>{
+    console.log(err)
+  }})
+  
+
+  console.log(`Ajout de ${this.pochette.quantite} pochettes ${this.pochette.typePochette}. Prix: ${this.pochette.totalPrice}`);
+  
+  // Ici, vous pouvez ajouter l'objet à une liste (tableau) de pochettes
+  // this.maListeDeCommande.push({...this.pochette});
+}
+  // Calcul du total des prix des colis
+calculateTotal(): number {
+  let total = 0; // Utiliser 'let' car la valeur va changer
+
+  // Vérification et calcul pour les parcels
+  if (this.parcels) {
+    for (const pa of this.parcels) {
+      total += pa.price || 0; // Sécurité au cas où price est indéfini
+    }
+  }
+
+  // Vérification et calcul pour les pochettes
+  if (this.pochettes) {
+    for (const po of this.pochettes) {
+      total += po.totalPrice || 0;
+    }
+  }
+
+  return total;
+}
+
+
+
+  chargerOperationApresAjoutColis(op:string){
+    this.passenger_service.getOpeartionContent(op).subscribe({next:data=>{
+      this.parcels=data.parcel;
+      console.log(this.parcels)
+    }})
+  }
+  validerEnvoie(){
+    this.parcel.sender=this.currentSender;
+    this.parcel.receiver=this.currentReceiver;
+    this.parcel.price=this.prix;
+    this.parcel.weight=this.weight;
+    
+this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
+    next: (response) => {
+      console.log('Colis ajouté avec succès !', response);
+  
+
+      alert('Opération réussie !');
+     this.parcels=response.parcel
+     this.currentReceiver=''
+      // Optionnel : réinitialiser le formulaire ici
+    },
+    error: (err) => {
+      console.error('Erreur lors de l\'ajout', err);
+      alert('Erreur lors de l\'enregistrement');
+    }
+  });
+  }
+  calculerPrix(){
+    if(this.weight>30) {this.overweignt=true}else{this.overweignt=false};
+    if(this.isNatParcel){
+    if (0.001 <= this.weight && this.weight <= 0.5) {
+            this.prix = 5;
+        } else if (0.501 <= this.weight && this.weight <= 1) {
+            this.prix = 7;
+        } else if (1.001 <= this.weight && this.weight <= 2) {
+            this.prix = 9;
+        } else if (2.001 <= this.weight && this.weight <= 5) {
+            this.prix = 10;
+        } else if (5.001 <= this.weight && this.weight <= 7) {
+            this.prix = 12;
+        } else if (7.001 <= this.weight && this.weight <= 12) {
+            this.prix = 14;
+        } else if (12.001 <= this.weight && this.weight <= 17) {
+            this.prix = 20;
+        } else if (17.001 <= this.weight && this.weight <= 22) {
+            this.prix = 25;
+        } else if (22.001 <= this.weight && this.weight <= 27) {
+            this.prix = 30;
+        } else if (27.001 <= this.weight && this.weight <= 30) {
+            this.prix = 35;
+        }else{this.prix=0}
       }
+  }
+  isMarchand(event: any) {
+    const val = event.target.value;
+    this.isMarchandise = (val === 'Marchandise');
+    this.rppimarchand=(this.isMarchandise && this.isRppi)
+        this.coutryFilter()
+
+}
+  
+  onNatServiceChange(){
+    this.isNatParcel=true;
+
+  }
+  onOtherServiceChange(event:any) {
+    if(event.target.value=='RPPI' && this.isMarchandise){
+      this.rppimarchand=true
+    }else{
+      this.rppimarchand=false;
+    }
+  this.isNatParcel = false; // Cache le div
+}
+coutryFilter(){
+if(this.currentReceiver.country!='Tunisie'){
+  this.isEmsi=true;
+  this.isRppi=true;
+  this.isFlour=false;
+  this.isNat=false;
+
+}else{
+  this.isEmsi=false;
+  this.isRppi=false;
+  this.isFlour=true;
+  this.isNat=true;
+}
+}
+  loadNewOperation() {
+    this.passenger_service.loadNewOperation().subscribe({
+      next: (data) =>{ this.op_id.set(data.formattedId)
+        this.opFormatted=data.formattedId
+      },
+      
+      error: (err) => this.op_id.set("Erreur")
+    });
+  }
+
+  // --- LOGIQUE DE RECHERCHE LIKE SQL ---
+  cheksender(event: any) {
+    const query = event.target.value.toString().toLowerCase();
+    const fieldName = event.target.name;
+
+    // Définir quel champ affiche la liste
+    if (fieldName === 'sendTel') this.activeField = 'tel';
+    else if (fieldName === 'sendName') this.activeField = 'name';
+    else if (fieldName === 'sendSocialReason') this.activeField = 'social';
+
+    if (query.length < 2) {
+      this.filteredSenders = [];
+      return;
+    }
+
+    this.filteredSenders = this.senders.filter(s => 
+      (s.sendName && s.sendName.toLowerCase().includes(query)) || 
+      (s.sendTel && s.sendTel.toString().includes(query)) ||
+      (s.sendSocialReason && s.sendSocialReason.toLowerCase().includes(query))
+    );
+  }
+
+  // --- SÉLECTION DEPUIS LA LISTE ---
+  selectSender(s: Sender) {
+    // On mappe les données reçues vers notre objet currentSender
+    this.currentSender = { 
+      ...s,
+      // Assurez-vous que les clés correspondent (ex: s.city -> this.currentSender.city)
+      country: s.country || 'Tunisie' 
+    };
+    this.filteredSenders = []; 
+    this.activeField = '';
+  }
+
+  // --- RÉINITIALISATION ---
+  resetSender() {
+    this.currentSender = { 
+      sendTel: '', sendName: '', sendSocialReason: '', country: 'Tunisie' 
+    };
+    this.filteredSenders = [];
+    this.activeField = '';
+  }
+
+  // --- CHARGEMENT API ---
+  loadSenders() {
+    this.passenger_service.loadSenders().subscribe({
+      next: (data) => this.senders = data,
+      error: (err) => console.error('Erreur senders', err)
+    });
+  }
+checkReceiver(event: any) {
+  const query = event.target.value.toString().toLowerCase();
+  const fieldName = event.target.name;
+
+  // Définir quel champ affiche la liste pour le destinataire
+  if (fieldName === 'recTel') this.activeReceiverField = 'tel';
+  else if (fieldName === 'recName') this.activeReceiverField = 'name';
+  else if (fieldName === 'recSocialReason') this.activeReceiverField = 'social';
+
+  if (query.length < 2) {
+    this.filteredReceivers = [];
+    return;
+  }
+
+  // Filtrage sur la liste des receivers chargée depuis votre service
+  this.filteredReceivers = this.receivers.filter(r => 
+    (r.recName?.toLowerCase().includes(query)) || 
+    (r.recTel?.toString().includes(query)) ||
+    (r.recSocialReason?.toLowerCase().includes(query))
+  );
+}
+
+// 3. La méthode de sélection pour le destinataire
+selectReceiver(r: Receiver) {
+  this.currentReceiver = { ...r };
+  this.filteredReceivers = [];
+  this.activeReceiverField = '';
+}
+  loadReceivers() {
+    this.passenger_service.loadReceivers().subscribe({
+      next: (data) => this.receivers = data,
+      error: (err) => console.error('Erreur receivers', err)
     });
   }
 }

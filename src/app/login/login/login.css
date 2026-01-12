@@ -1,0 +1,69 @@
+/* Variables de couleurs DirectPost */
+:root {
+  --post-yellow: #ffcc00;
+  --post-blue: #003366;
+  --post-light: #f8f9fa;
+}
+
+.direct-post-container {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  background-image: radial-gradient(circle at 10% 20%, rgba(255, 204, 0, 0.05) 0%, rgba(255, 255, 255, 1) 90%);
+}
+
+.auth-card {
+  max-width: 420px;
+  width: 90%;
+  border-radius: 20px;
+  background: white;
+}
+
+.brand-strip {
+  height: 6px;
+  background: linear-gradient(to right, var(--post-blue), var(--post-yellow));
+}
+
+.brand-title {
+  color: var(--post-blue);
+  letter-spacing: -0.5px;
+}
+
+.logo-circle {
+  width: 70px;
+  height: 70px;
+  background: var(--post-yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+/* Style des inputs */
+.form-control:focus {
+  border-color: var(--post-yellow);
+  box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.2);
+}
+
+.input-group-text {
+  color: var(--post-blue);
+}
+
+/* Bouton Spécifique */
+.btn-post-primary {
+  background-color: var(--post-blue);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-post-primary:hover:not(:disabled) {
+  background-color: #002244;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 51, 102, 0.3);
+}
+
+.btn-post-primary:disabled {
+  background-color: #ccc;
+  opacity: 0.7;
+}
