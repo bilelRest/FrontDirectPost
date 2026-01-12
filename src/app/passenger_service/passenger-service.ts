@@ -85,8 +85,8 @@ export interface Receiver {
 })
 export class PassengerService {
 constructor(private http: HttpClient) { }
- //  baserUrl='https://directpost.apirest.pro/api/operation/passenger';
-     baserUrl='http://localhost:6161/api/operation/passenger';
+  baserUrl='https://directpost.apirest.pro/api/operation/passenger';
+     //baserUrl='http://localhost:6161/api/operation/passenger';
   loadNewOperation() {
     return this.http.get<Operation>(this.baserUrl+'/new');
   }  
