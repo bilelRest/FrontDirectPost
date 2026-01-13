@@ -189,7 +189,7 @@
           
           <div class="col-md-2 d-flex align-items-center justify-content-end">
             <input type="hidden" id="parcelPrice" name="price" value="0">
-            <span *ngIf="!overweignt" id="pricezone" class="fw-bold text-primary me-2" [(ngModel)]="prix"></span>
+            <span *ngIf="!overweignt" id="pricezone" name="price" class="fw-bold text-primary me-2" >{{prix}}</span>
             <span *ngIf="overweignt"  class="  alert text-danger">Poids Max 30 KG</span>
 
             <button type="button" (click)="validerEnvoie()" id="btnValider" class="btn btn-success btn-sm px-3 fw-bold shadow-sm">VALIDER</button>
@@ -339,6 +339,13 @@ Ajouter                    </button>
           </div>
 
           <div class="row g-0 border-bottom border-dark">
+            <div *ngIf="isOffre" class="col-6 border-end border-dark p-2">
+              <div class="fw-bold"><h1>Appel d'offre</h1></div>
+              <div class="small"></div>
+              <div class="small"></div>
+              <div class="small"></div>
+              <div class="small"></div>
+            </div>
             <div *ngIf="!isOffre" class="col-6 border-end border-dark p-2">
               <small class="text-uppercase fw-bold d-block" style="font-size: 0.6rem;">From (Expéditeur):</small>
               <div class="fw-bold">{{ currentSender.sendName }}</div>

@@ -282,9 +282,9 @@ this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
  recId: 0,
  recName: '',
  recSocialReason: '',
- recTel: 0,
+ recTel: null,
  adress: '',
- postalCode: 0,
+ postalCode: null,
  city: '',
  country: '',
  recEmail: '',
@@ -294,6 +294,8 @@ this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
      this.weight=null
      this.parcels.push(response)
      this.parcel.price=0
+     this.prix=0
+
       // Optionnel : réinitialiser le formulaire ici
       this.cdr.detectChanges();
     },
