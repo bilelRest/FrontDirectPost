@@ -1,7 +1,11 @@
 import { afterNextRender, Component, OnInit, signal } from '@angular/core';
-import { PassengerService, Receiver, Sender,Operation, Parcel, TrackingNumber, Pochette } from '../../app/passenger_service/passenger-service';
+import { PassengerService, Receiver, Sender,Operation, Parcel, TrackingNumber, Pochette, Payment } from '../../app/passenger_service/passenger-service';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import JsBarcode from 'jsbarcode';
+import { response } from 'express';
+import { Router } from '@angular/router'; // <--- Bien vérifier le 'r' à la fin
+    declare var bootstrap: any;
 
 @Component({
   selector: 'app-passenger',
@@ -13,8 +17,8 @@ import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 
 export class Passenger implements OnInit {
 
-  op_id = signal<string>("Chargement ...");
-  opFormatted:string="";
+ op_id = signal<string>("Chargement ...");
+   opFormatted:any;
   senders: Sender[] = [];
 filteredReceivers: Receiver[] = [];
 receivers:Receiver[]=[];
@@ -38,6 +42,8 @@ parcel: Parcel = {
   receiver: {} as Receiver,
   // Initialisation de l'objet operation pour que le lien existe
   operation: {
+    banque:'',
+    cheque:'',
     formattedId: ''
   } as Operation, 
   trackingNumber: {
@@ -46,6 +52,17 @@ parcel: Parcel = {
     formattedParcelId: ''
   } as TrackingNumber,
 };
+operation_en_cour:Operation={
+  opId: 0,
+  banque: '',
+  cheque: '',
+  formattedId: '',
+  createdAt: '',
+  validated: false,
+  cancelled: false,
+  parcel: [],
+  pochette: []
+}
 pochette: Pochette = {
   totalPrice: 0,
   deleted: false,
@@ -83,6 +100,10 @@ weight:any
     recTel: '',
     recEmail: ''
   };
+  payment:Payment={
+    banque: '',
+    cheque: ''
+  }
   isNat:boolean=true;
   isFlour:boolean=true;
   isEmsi:boolean=false;
@@ -90,7 +111,11 @@ weight:any
   overweignt: boolean=false;
   cheque:boolean=false;
 pochettes:Pochette[]=[]
-  constructor(private passenger_service: PassengerService) {
+today: Date = new Date();
+  cdr: any;
+  
+  constructor(private passenger_service: PassengerService,private router:Router) {
+
     afterNextRender(() => {
       setTimeout(() => {
         this.loadNewOperation();
@@ -98,21 +123,63 @@ pochettes:Pochette[]=[]
     });
   }
 
-  ngOnInit(): void {
+validerPayment() {
+  if(this.cheque && (this.payment.cheque == '' || this.payment.banque == '')) {
+    return alert("Données de chèque ou banque manquant !! ");
+  }
+
+  if(!this.cheque) {
+    this.payment.banque = 'none';
+    this.payment.cheque = 'none';
+  }
+
+  this.passenger_service.validatePayment(
+    localStorage.getItem('op') ? localStorage.getItem('op') : this.opFormatted, 
+    this.payment
+  ).subscribe({
+    next: (data) => {
+      this.operation_en_cour = data;
+
+      if(data.validated) {
+this.printReceipt(this.operation_en_cour);        // 1. Déclencher l'impression
+        setTimeout(() => {
+          window.print();
+          
+          // 2. Rediriger APRÈS que la boîte de dialogue d'impression soit fermée
+          localStorage.removeItem('op');
+          this.router.navigate(['/home']);
+        }, 500);
+      }
+    },
+    error: (err) => {
+      alert("Un problème est survenu lors de la validation de l'opération");
+    }
+  });
+}
+
+// Optionnel : Calculer le total global
+calculateGlobalTotal() {
+  let total = 0;
+  this.operation_en_cour?.parcel?.forEach((p:any) => total += (p.price || 0));
+  return total.toFixed(3);
+} 
+ngOnInit(): void {
     const monForm = new FormGroup({
     btncheck1: new FormControl(true) // 'true' définit la case comme cochée par défaut
   });
     this.loadReceivers();
     this.loadSenders();
   }
-  private readonly TARIFS_POCHETTES: { [key: string]: number } = {
+   readonly TARIFS_POCHETTES: { [key: string]: number } = {
   'pn': 1,    // Pochette National
   'pnpm': 1.2, // International PM
   'pngm': 1.5, // International GM
   'mat': 2    // Matelassée
 };
 modeDePayment(event:any){
-if(event.target.value=="cheque")this.cheque=true;else this.cheque=false;
+if(event.target.value=="cheque")
+  this.cheque=true;
+else this.cheque=false;
 
 }
 addPochette(event: any) {
@@ -164,8 +231,15 @@ calculateTotal(): number {
 
   return total;
 }
+isOffre:boolean=false
+setAppelOffre(event:any){
+  if(event.target.value=='Appel'){
+    this.isOffre=true;
+  }else{
+    this.isOffre=false;
+  }
 
-
+}
 
   chargerOperationApresAjoutColis(op:string){
     this.passenger_service.getOpeartionContent(op).subscribe({next:data=>{
@@ -182,12 +256,17 @@ calculateTotal(): number {
 this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
     next: (response) => {
       console.log('Colis ajouté avec succès !', response);
-  
+  this.preparePrint() ;
 
-      alert('Opération réussie !');
-     this.parcels=response.parcel
+     this.parcel.trackingNumber=response.trackingNumber
+    // this.loadNewOperation()
+    // this.chargerOperationApresAjoutColis(localStorage.getItem('op')?localStorage.getItem('op'):this.opFormatted)
      this.currentReceiver=''
+     this.weight=null
+     this.parcels.push(response)
+     this.parcel.price=0
       // Optionnel : réinitialiser le formulaire ici
+      this.cdr.detectChanges();
     },
     error: (err) => {
       console.error('Erreur lors de l\'ajout', err);
@@ -255,15 +334,62 @@ if(this.currentReceiver.country!='Tunisie'){
   this.isNat=true;
 }
 }
-  loadNewOperation() {
-    this.passenger_service.loadNewOperation().subscribe({
-      next: (data) =>{ this.op_id.set(data.formattedId)
-        this.opFormatted=data.formattedId
-      },
-      
-      error: (err) => this.op_id.set("Erreur")
+// N'oubliez pas de déclarer Bootstrap pour éviter les erreurs TS
+
+preparePrint() {
+  // 1. On génère le code à barres dans la modale
+  // On utilise un petit timeout pour s'assurer que l'élément SVG est prêt
+  setTimeout(() => {
+    JsBarcode("#trackingBarcode", this.parcel.trackingNumber?.formattedParcelId || "N/A", {
+      format: "CODE128",
+      width: 2.5,
+      height: 70,
+      displayValue: true
     });
+  }, 100);
+
+  // 2. On ouvre la modale
+  const modalElem = document.getElementById('printModal');
+  const modal = new bootstrap.Modal(modalElem);
+  modal.show();
+}
+
+confirmAndPrint() {
+  window.print();
+}
+newOperation(){
+  localStorage.removeItem('op');
+  this.loadNewOperation()
+}
+loadNewOperation() {
+  // 1. On récupère la valeur actuelle du signal
+  let currentId = localStorage.getItem('op')
+
+  // 2. Sécurité : Si c'est le texte par défaut ou vide, on force 'new'
+  if (currentId === "Chargement ..." || !currentId ) {
+    currentId = 'new';
   }
+
+  console.log("Valeur envoyée au backend :", currentId);
+
+  this.passenger_service.loadNewOperation(currentId?currentId:'new').subscribe({
+    next: (data) => {
+      // 3. On met à jour le Signal ET la variable avec le nouvel ID reçu
+      this.op_id.set(data.formattedId);
+      this.opFormatted = data.formattedId;
+      localStorage.setItem("op",data.formattedId)
+      this.parcels=data.parcel;
+      this.pochettes=data.pochette
+      console.log(data)
+      
+      console.log("Nouvel ID reçu et stocké :", data.formattedId);
+    },
+    error: (err) => {
+      console.error('Erreur lors du chargement:', err);
+      this.op_id.set("Erreur");
+    }
+  });
+}
 
   // --- LOGIQUE DE RECHERCHE LIKE SQL ---
   cheksender(event: any) {
@@ -299,14 +425,18 @@ if(this.currentReceiver.country!='Tunisie'){
     this.activeField = '';
   }
 
-  // --- RÉINITIALISATION ---
-  resetSender() {
+resetSender() {
+    this.weight = undefined; // Ou this.weight = '';
+    
     this.currentSender = { 
-      sendTel: '', sendName: '', sendSocialReason: '', country: 'Tunisie' 
+        sendTel: '', sendName: '', sendSocialReason: '', country: 'Tunisie' 
     };
     this.filteredSenders = [];
     this.activeField = '';
-  }
+    
+    // Si vous voulez forcer le prix à zéro aussi lors du reset
+    this.parcel.price = 0; 
+}
 
   // --- CHARGEMENT API ---
   loadSenders() {
@@ -349,4 +479,58 @@ selectReceiver(r: Receiver) {
       error: (err) => console.error('Erreur receivers', err)
     });
   }
-}
+ printReceipt(operation: any) {
+  // 1. Préparer les lignes du tableau
+  let rows = '';
+  operation.parcel?.forEach((p: any) => {
+    rows += `<tr><td>Colis: ${p.trackingNumber}</td><td style="text-align:right">${Number(p.price).toFixed(3)}</td></tr>`;
+  });
+  operation.pochette?.forEach((po: any) => {
+    rows += `<tr><td>Pochette: ${po.typePochette}</td><td style="text-align:right">${Number(po.totalPrice).toFixed(3)}</td></tr>`;
+  });
+
+  // 2. Créer le contenu HTML complet sous forme de chaîne de caractères
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Imprimer Reçu</title>
+        <style>
+          body { font-family: monospace; padding: 20px; }
+          table { width: 100%; border-collapse: collapse; }
+          td { padding: 5px; border-bottom: 1px dashed black; }
+          .total { font-size: 20px; font-weight: bold; text-align: right; margin-top: 20px; }
+          @media print { .no-print { display: none; } }
+        </style>
+      </head>
+      <body>
+        <h2 style="text-align:center">POSTE TUNISIENNE</h2>
+        <p>Reçu N°: ${operation.formattedId}</p>
+        <hr>
+        <table>${rows}</table>
+        <div class="total">TOTAL: ${Number(this.calculateTotal()).toFixed(3)} TND</div>
+        <script>
+          window.onload = () => {
+            window.print();
+            window.onafterprint = () => window.close();
+          };
+        </script>
+      </body>
+    </html>
+  `;
+
+  // 3. LA MAGIE : Transformer le texte en un objet "Fichier" (Blob)
+  const blob = new Blob([htmlContent], { type: 'text/html' });
+  const blobUrl = URL.createObjectURL(blob);
+
+  // 4. Ouvrir ce fichier virtuel dans une nouvelle fenêtre
+  const printWindow = window.open(blobUrl, '_blank');
+  
+  if (!printWindow) {
+    alert("Veuillez autoriser les pop-ups");
+    return;
+  }
+
+  // Nettoyage de la mémoire après l'ouverture
+  URL.revokeObjectURL(blobUrl);
+}}

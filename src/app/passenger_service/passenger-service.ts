@@ -1,8 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 export interface Operation {
   opId: number;
+  banque:string;
+  cheque:string;
   formattedId: string;
   createdAt: string;
   validated: boolean;
@@ -80,30 +82,39 @@ export interface Receiver {
       recEmail:string;
     createdAt:Date;
 }
+export interface Payment{
+  banque:string
+  cheque:string
+}
 @Injectable({
   providedIn: 'root',
 })
 export class PassengerService {
 constructor(private http: HttpClient) { }
   baserUrl='https://directpost.apirest.pro/api/operation/passenger';
-     //baserUrl='http://localhost:6161/api/operation/passenger';
-  loadNewOperation() {
-    return this.http.get<Operation>(this.baserUrl+'/new');
-  }  
+ //    baserUrl='http://localhost:6161/api/operation/passenger';
+     
+     validatePayment(op:string,payment:Payment):Observable<Operation>{
+      return this.http.post<Operation>(this.baserUrl+"/payment?op="+op,payment)
+     }
+ loadNewOperation(op: string) {
+  const params = new HttpParams().set('op', op);
+  return this.http.get<Operation>(`${this.baserUrl}/new`, { params });
+}
   loadSenders(){
     return this.http.get<Sender[]>(this.baserUrl+'/senders');
   }
    loadReceivers(){
     return this.http.get<Receiver[]>(this.baserUrl+'/receivers');
   }
-  addParcel(parcel: Parcel, opFormatted: string):Observable<Operation>{
-    return this.http.post<Operation>(this.baserUrl+"/addparcel?op="+opFormatted,parcel)
+  addParcel(parcel: Parcel, opFormatted: string):Observable<Parcel>{
+    return this.http.post<Parcel>(this.baserUrl+"/addparcel?op="+opFormatted,parcel)
   }
   
   addPochetteToOperation(op:string,pochette:Pochette):Observable<Operation>{
     return this.http.post<Operation>(this.baserUrl+"/addpochette?op="+op,pochette)
   }
   getOpeartionContent(numop:string):Observable<any>{
-    return this.http.get(this.baserUrl+"/parcels?op="+numop);
+    return this.http.get<Operation>(this.baserUrl+"/parcels?op="+numop);
   }
 }
