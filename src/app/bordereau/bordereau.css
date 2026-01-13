@@ -1,77 +1,36 @@
 @media print {
+    @page {
+        size: A4 portrait;
+        margin: 0.8cm; /* Marges minimales */
+    }
+
+    body {
+        font-size: 10pt;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
     .printable-area {
-        padding: 0;
-        margin: 0;
+        width: 100% !important;
+        max-height: 28cm; /* Forcer le contenu à rester sous la limite A4 */
+        overflow: hidden;
     }
-    
-    .header-section, .footer-section, .poste-footer {
-        break-inside: avoid;
-    }
-    
-    .table {
-        border: 1px solid #000 !important;
-    }
-    
-    .table th {
-        background-color: #f8f9fa !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-    
-    .section-header {
-        background-color: #0056b3 !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-    
-    .total-section {
-        background-color: #f8f9fa !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-    
-    .no-print {
+
+    /* Supprime les en-têtes/pieds de page du navigateur (URL, Date) */
+    header, footer, .no-print {
         display: none !important;
     }
-    
-    body {
-        font-size: 12pt;
-    }
-    
-    h1, h2, h3, h4, h5, h6 {
-        page-break-after: avoid;
-    }
-    
-    table {
-        page-break-inside: avoid;
-    }
+
+    /* Empêche les tableaux de se couper maladroitement */
+    table { page-break-inside: avoid; }
+    .row { page-break-inside: avoid; }
 }
 
-/* Styles généraux */
-.tracking-number {
-    font-family: 'Courier New', monospace;
-    letter-spacing: 1px;
-}
-
-.logo-container {
-    background: linear-gradient(135deg, #0056b3 0%, #dc3545 100%);
-}
-
-.total-amount {
+/* Style de l'aperçu écran */
+.printable-area {
+    max-width: 21cm;
+    margin: auto;
     background: white;
-    padding: 15px;
-    border-radius: 8px;
-    border: 2px solid #0056b3;
-}
-
-.section-header {
-    background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
-}
-
-.stamp-placeholder {
-    border-style: dashed !important;
-}
-
-.qr-code-placeholder {
-    min-width: 80px;
+    padding: 1.5cm;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }

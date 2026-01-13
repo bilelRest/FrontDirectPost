@@ -81,6 +81,10 @@ export class Bordereau implements OnInit {
           //console.error('Erreur lors du chargement:', err);
         //}
       //});
-    }
-  }
-}
+     window.print();
+    setTimeout(() => {
+      localStorage.removeItem("currentop");
+    localStorage.removeItem("op");
+    
+    },2000)
+  }}}

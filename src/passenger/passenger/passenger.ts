@@ -1,4 +1,4 @@
-import { afterNextRender, Component, OnInit, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 import { PassengerService, Receiver, Sender,Operation, Parcel, TrackingNumber, Pochette, Payment } from '../../app/passenger_service/passenger-service';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { RouterLink } from '@angular/router'; // <--- Bien vérifier le 'r' à l
 @Component({
   selector: 'app-passenger',
   standalone: true,
-  imports: [CommonModule, FormsModule,RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './passenger.html',
   styleUrl: './passenger.css',
 })
@@ -79,28 +79,34 @@ pochette: Pochette = {
 prix:number=0;
 weight:any
   // Objet Expéditeur complet
-  currentSender: any = {
-    sendTel: '',
+  currentSender: Sender = {
+    sendId: 0,
     sendName: '',
     sendSocialReason: '',
+    sendTel: 0,
     adress: '',
+    postalCode: 0,
     city: '',
-    postalCode: null,
-    country: 'Tunisie',
-    sendEmail: ''
-  };
+    country: '',
+    sendEmail: '',
+    createdAt: new Date()
+  
+  }
 
   // Objet Destinataire complet
-  currentReceiver: any = {
-    country: 'Tunisie',
+  currentReceiver: Receiver ={
+    recId: 0,
     recName: '',
     recSocialReason: '',
+    recTel: 0,
     adress: '',
-    ville: '',
-    postalCode: '',
-    recTel: '',
-    recEmail: ''
-  };
+    postalCode: 0,
+    city: '',
+    country: '',
+    recEmail: '',
+    createdAt:new Date
+  
+  }
   payment:Payment={
     banque: '',
     cheque: ''
@@ -113,9 +119,8 @@ weight:any
   cheque:boolean=false;
 pochettes:Pochette[]=[]
 today: Date = new Date();
-  cdr: any;
   
-  constructor(private passenger_service: PassengerService,private router:Router) {
+  constructor(private passenger_service: PassengerService,private router:Router,private cdr: ChangeDetectorRef) {
 
     afterNextRender(() => {
       setTimeout(() => {
@@ -153,7 +158,7 @@ validerPayment() {
         
         // Rediriger vers home après un court délai
         setTimeout(() => {
-        //  this.router.navigate(['/home']);
+          this.router.navigate(['/home']);
         }, 500);
       }
     },
@@ -267,7 +272,19 @@ this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
      this.parcel.trackingNumber=response.trackingNumber
     // this.loadNewOperation()
     // this.chargerOperationApresAjoutColis(localStorage.getItem('op')?localStorage.getItem('op'):this.opFormatted)
-     this.currentReceiver=''
+     this.currentReceiver={
+ recId: 0,
+ recName: '',
+ recSocialReason: '',
+ recTel: 0,
+ adress: '',
+ postalCode: 0,
+ city: '',
+ country: '',
+ recEmail: '',
+ createdAt:new Date
+
+ }
      this.weight=null
      this.parcels.push(response)
      this.parcel.price=0
@@ -434,9 +451,6 @@ loadNewOperation() {
 resetSender() {
     this.weight = undefined; // Ou this.weight = '';
     
-    this.currentSender = { 
-        sendTel: '', sendName: '', sendSocialReason: '', country: 'Tunisie' 
-    };
     this.filteredSenders = [];
     this.activeField = '';
     

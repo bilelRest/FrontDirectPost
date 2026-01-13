@@ -65,7 +65,7 @@
         <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.8rem;">
             <i class="bi bi-person-down me-1 text-success"></i>DESTINATAIRE
         </h6>
-        <button type="button" class="btn btn-xs btn-outline-dark border-0 py-0" (click)="currentReceiver = {country:'Tunisie'}" style="font-size: 0.7rem;">Effacer</button>
+        <button type="button" class="btn btn-xs btn-outline-dark border-0 py-0" style="font-size: 0.7rem;">Effacer</button>
     </div>
     <div class="card-body py-2">
         <div class="row g-1">
@@ -223,7 +223,7 @@
 <span>Qté</span>
 <input id="quantitePochette" 
        name="quantitePochette"
-       [(ngModel)]="pochette.totalPrice" 
+      
        type="number" 
        class="form-control form-control-sm" 
        style="width: 70px;" [(ngModel)]="pochette.quantite" min="1"/>
