@@ -189,7 +189,7 @@
           
           <div class="col-md-2 d-flex align-items-center justify-content-end">
             <input type="hidden" id="parcelPrice" name="price" value="0">
-            <span *ngIf="!overweignt" id="pricezone" class="fw-bold text-primary me-2">{{prix}}</span>
+            <span *ngIf="!overweignt" id="pricezone" class="fw-bold text-primary me-2" [(ngModel)]="prix"></span>
             <span *ngIf="overweignt"  class="  alert text-danger">Poids Max 30 KG</span>
 
             <button type="button" (click)="validerEnvoie()" id="btnValider" class="btn btn-success btn-sm px-3 fw-bold shadow-sm">VALIDER</button>

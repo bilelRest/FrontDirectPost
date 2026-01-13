@@ -328,6 +328,8 @@ this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
             this.prix = 35;
         }else{this.prix=0}
       }
+              return this.prix;
+
   }
   isMarchand(event: any) {
     const val = event.target.value;
