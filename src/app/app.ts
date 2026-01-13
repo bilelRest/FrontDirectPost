@@ -1,6 +1,5 @@
-import { afterNextRender, Component, OnInit, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { PassengerService } from './passenger_service/passenger-service';
+import { Component,  } from '@angular/core';
+import {  RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +10,4 @@ import { PassengerService } from './passenger_service/passenger-service';
 })
 export class App  {
   
-
-  // 1. Utilisez un signal pour op_id au lieu d'une string simple
 }

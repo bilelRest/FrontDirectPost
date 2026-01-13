@@ -36,55 +36,52 @@ export class Bordereau implements OnInit {
    this.operation_en_cour() 
   }
 
-  operation_en_cour() {
-    if (this.opid) {
-      console.log("Operation au debut")
-      console.log(this.operation_en_cours)
-    //  this.print_service.getOpeartionContent(this.opid).subscribe({
-      //  next: data => {
-        //  this.operation = data;
-          this.parcels = this.operation_en_cours.parcel;
-          this.pochettes=this.operation_en_cours.pochette;
-          console.log("Operation apres chargement")
-          console.log(this.operation_en_cours)
-          console.log("Pochette list ")
-          console.log(this.pochettes)
-          console.log("Parcel list ")
-          console.log(this.parcels)
-
-          for (let i = 0; i < this.parcels.length; i++) {
-            this.total+=this.parcels[i].price;
-          }
-         for (let i = 0; i < this.pochettes.length; i++) {
-          this.total+=this.pochettes[i].totalPrice;
-  switch (this.pochettes[i].typePochette) {
-    case 'pn':
-      this.pochettes[i].typePochette = 'Pochette National';
-      break;
-    case 'pnpm':
-      this.pochettes[i].typePochette = 'Pochette International Petit Modèle';
-      break;
-    case 'pngm':
-      this.pochettes[i].typePochette = 'Pochette International Grand Modèle';
-      break;
-    case 'mat':
-      this.pochettes[i].typePochette = 'Pochette Matelassée';
-      break;
-    default:
-      // Optionnel : valeur par défaut si aucune ne correspond
-      break;
+ operation_en_cour() {
+  // 1. Vérification de sécurité : si l'objet est null, on arrête tout de suite
+  if (!this.operation_en_cours) {
+    console.warn("Aucune opération en cours trouvée dans le stockage.");
+    // Optionnel: rediriger l'utilisateur s'il n'y a rien à afficher
+    // this.router.navigate(['/']); 
+    return;
   }
-}
-        //  console.log('Parcels chargés:', this.parcels);
-    //    },
-        //error: err => {
-          //console.error('Erreur lors du chargement:', err);
-        //}
-      //});
-     window.print();
+
+  if (this.opid) {
+    console.log("Operation au debut", this.operation_en_cours);
+
+    // Utilisation sécurisée des données
+    this.parcels = this.operation_en_cours.parcel || [];
+    this.pochettes = this.operation_en_cours.pochette || [];
+
+    // Calcul du total des colis
+    for (let i = 0; i < this.parcels.length; i++) {
+      this.total += this.parcels[i].price;
+    }
+
+    // Calcul et formatage des pochettes
+    for (let i = 0; i < this.pochettes.length; i++) {
+      this.total += this.pochettes[i].totalPrice;
+      
+      // Transformation des codes en libellés lisibles
+      const types: { [key: string]: string } = {
+        'pn': 'Pochette National',
+        'pnpm': 'Pochette International Petit Modèle',
+        'pngm': 'Pochette International Grand Modèle',
+        'mat': 'Pochette Matelassée'
+      };
+      
+      const typeKey = this.pochettes[i].typePochette;
+      if (types[typeKey]) {
+        this.pochettes[i].typePochette = types[typeKey];
+      }
+    }
+
+    // Impression
+    window.print();
+
+    // Suppression propre après impression
     setTimeout(() => {
       localStorage.removeItem("currentop");
-    localStorage.removeItem("op");
-    
-    },2000)
-  }}}
+      localStorage.removeItem("op");
+    }, 2000);
+  }
+}}
