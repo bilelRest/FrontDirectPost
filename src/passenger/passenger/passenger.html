@@ -275,8 +275,8 @@ Ajouter                    </button>
            [(ngModel)]="payment.cheque" placeholder="00000000">
   </div>
 </span>
-                        <button (click)="validerPayment()" type="button" class="btn btn-outline-warning btn-lg px-5 shadow" >
-                            <i class="bi bi-printer-fill me-2"></i>Confirmer
+                        <button (click)="validerPayment()"  class="btn btn-outline-warning btn-lg px-5 shadow">
+  <i class="bi bi-printer-fill me-2"></i>Confirmer
                         </button>
                         <span class="badge bg-primary px-4" id="colisCount">Colis :{{ parcels ? parcels.length : 0 }}</span>
                         <span class="badge bg-info px-4 " id="pochetteCount">Pochettes :{{ pochettes ? pochettes.length : 0 }} </span>

@@ -4,13 +4,14 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 import JsBarcode from 'jsbarcode';
 import { response } from 'express';
-import { Router } from '@angular/router'; // <--- Bien vérifier le 'r' à la fin
+import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router'; // <--- Bien vérifier le 'r' à la fin
     declare var bootstrap: any;
 
 @Component({
   selector: 'app-passenger',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterLink],
   templateUrl: './passenger.html',
   styleUrl: './passenger.css',
 })
@@ -122,8 +123,10 @@ today: Date = new Date();
       }, 0);
     });
   }
+  
 
 validerPayment() {
+  
   if(this.cheque && (this.payment.cheque == '' || this.payment.banque == '')) {
     return alert("Données de chèque ou banque manquant !! ");
   }
@@ -138,16 +141,19 @@ validerPayment() {
     this.payment
   ).subscribe({
     next: (data) => {
-      this.operation_en_cour = data;
-
+      console.log("donee recu du serveurs");
+      console.log(data);
       if(data.validated) {
-this.printReceipt(this.operation_en_cour);        // 1. Déclencher l'impression
+        // Sauvegarder l'opération dans localStorage
+        localStorage.setItem("currentop", JSON.stringify(data));
+        
+        // Ouvrir le bordereau dans un nouvel onglet
+        const printUrl = this.router.createUrlTree(['/bordereau']).toString();
+        window.open(printUrl, '_blank');
+        
+        // Rediriger vers home après un court délai
         setTimeout(() => {
-          window.print();
-          
-          // 2. Rediriger APRÈS que la boîte de dialogue d'impression soit fermée
-          localStorage.removeItem('op');
-          this.router.navigate(['/home']);
+        //  this.router.navigate(['/home']);
         }, 500);
       }
     },
@@ -479,58 +485,4 @@ selectReceiver(r: Receiver) {
       error: (err) => console.error('Erreur receivers', err)
     });
   }
- printReceipt(operation: any) {
-  // 1. Préparer les lignes du tableau
-  let rows = '';
-  operation.parcel?.forEach((p: any) => {
-    rows += `<tr><td>Colis: ${p.trackingNumber}</td><td style="text-align:right">${Number(p.price).toFixed(3)}</td></tr>`;
-  });
-  operation.pochette?.forEach((po: any) => {
-    rows += `<tr><td>Pochette: ${po.typePochette}</td><td style="text-align:right">${Number(po.totalPrice).toFixed(3)}</td></tr>`;
-  });
-
-  // 2. Créer le contenu HTML complet sous forme de chaîne de caractères
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Imprimer Reçu</title>
-        <style>
-          body { font-family: monospace; padding: 20px; }
-          table { width: 100%; border-collapse: collapse; }
-          td { padding: 5px; border-bottom: 1px dashed black; }
-          .total { font-size: 20px; font-weight: bold; text-align: right; margin-top: 20px; }
-          @media print { .no-print { display: none; } }
-        </style>
-      </head>
-      <body>
-        <h2 style="text-align:center">POSTE TUNISIENNE</h2>
-        <p>Reçu N°: ${operation.formattedId}</p>
-        <hr>
-        <table>${rows}</table>
-        <div class="total">TOTAL: ${Number(this.calculateTotal()).toFixed(3)} TND</div>
-        <script>
-          window.onload = () => {
-            window.print();
-            window.onafterprint = () => window.close();
-          };
-        </script>
-      </body>
-    </html>
-  `;
-
-  // 3. LA MAGIE : Transformer le texte en un objet "Fichier" (Blob)
-  const blob = new Blob([htmlContent], { type: 'text/html' });
-  const blobUrl = URL.createObjectURL(blob);
-
-  // 4. Ouvrir ce fichier virtuel dans une nouvelle fenêtre
-  const printWindow = window.open(blobUrl, '_blank');
-  
-  if (!printWindow) {
-    alert("Veuillez autoriser les pop-ups");
-    return;
-  }
-
-  // Nettoyage de la mémoire après l'ouverture
-  URL.revokeObjectURL(blobUrl);
-}}
+ }
