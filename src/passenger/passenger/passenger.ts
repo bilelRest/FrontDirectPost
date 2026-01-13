@@ -32,9 +32,9 @@ rppimarchand:boolean=false;
 emsimarchand:boolean=false;
 parcels:Parcel[]=[]
 parcel: Parcel = {
-  width: 0,
-  height: 0,
-  lenght: 0,
+  width: null,
+  height: null,
+  lenght: null,
   price: 0,
   weight: null,
   deleted: false,
@@ -83,9 +83,9 @@ weight:any
     sendId: 0,
     sendName: '',
     sendSocialReason: '',
-    sendTel: 0,
+    sendTel: null,
     adress: '',
-    postalCode: 0,
+    postalCode: null,
     city: '',
     country: '',
     sendEmail: '',
@@ -98,9 +98,9 @@ weight:any
     recId: 0,
     recName: '',
     recSocialReason: '',
-    recTel: 0,
+    recTel: null,
     adress: '',
-    postalCode: 0,
+    postalCode: null,
     city: '',
     country: '',
     recEmail: '',
@@ -189,9 +189,15 @@ ngOnInit(): void {
 };
 modeDePayment(event:any){
 if(event.target.value=="cheque")
-  this.cheque=true;
-else this.cheque=false;
+   this.ischeque(1);
+else this.ischeque(0);
 
+}
+ischeque(t:number){
+  if(t==1)
+  this.cheque=true 
+  if(t==0)
+  this.cheque=false
 }
 addPochette(event: any) {
   event.preventDefault(); 

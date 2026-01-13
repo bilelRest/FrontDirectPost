@@ -15,9 +15,9 @@ export interface Operation {
 export interface Parcel {
   parcelId?: number;          // Optionnel car généré par le backend
   createdAt: string | Date;   // LocalDate arrive souvent en string ISO (2026-01-12)
-  width: number;
-  height: number;
-  lenght: number;             // Gardé avec la faute d'orthographe pour matcher ton Java
+  width: number | null;
+  height: number | null;
+  lenght: number | null;             // Gardé avec la faute d'orthographe pour matcher ton Java
   price: number;
   weight: number | null ;
   deleted: boolean;
@@ -34,7 +34,7 @@ export interface Pochette {
   createdAt: string | Date;   // LocalDate arrive souvent en string ISO (2026-01-12)
   quantite:number;            // Gardé avec la faute d'orthographe pour matcher ton Java
   typePochette:string;
-  totalPrice:number;
+  totalPrice: number;
   deleted: boolean;
   
   // Relations (Objets imbriqués)
@@ -54,29 +54,29 @@ export interface AppUser {
   appRoles: []; 
 }
 export interface TrackingNumber {
-  parcelId?: number;           // Correspond à ton Long parcelId
+  parcelId?: number | null;           // Correspond à ton Long parcelId
   createdAt: string | Date;    // LocalDate est envoyé en String (ISO) par Jackson
   formattedParcelId: string;   // Ton ID unique pour les recherches
 }
 export interface Sender {
-   sendId:number;
-      sendName:string;
+   sendId:number | null;
+      sendName:string ;
       sendSocialReason:string;
-      sendTel:number;
+      sendTel:number | null | null;
       adress:string;
-      postalCode:number;
+      postalCode:number | null ;
       city:string;
       country:string;
       sendEmail:string;
     createdAt:Date;
 }
 export interface Receiver {
-   recId:number;
+   recId:number | null;
       recName:string;
       recSocialReason:string;
-      recTel:number;
+      recTel:number | null;
       adress:string;
-      postalCode:number;
+      postalCode:number | null;
       city:string;
       country:string;
       recEmail:string;

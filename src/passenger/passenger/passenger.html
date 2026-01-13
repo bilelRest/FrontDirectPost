@@ -17,7 +17,7 @@
         <div class="row g-1">
           <div class="col-md-2 position-relative">
             <label for="senderTel">Téléphone</label>
-            <input id="senderTel" name="sendTel" type="tel" class="form-control form-control-sm" placeholder="Téléphone"
+            <input id="senderTel" name="sendTel" type="tel" min="00000000" max="99999999" class="form-control form-control-sm" 
               [(ngModel)]="currentSender.sendTel" (input)="cheksender($event)">
             
             <div class="suggestion-box shadow border" *ngIf="filteredSenders.length > 0 && activeField === 'tel'">
@@ -257,6 +257,7 @@ Ajouter                    </button>
 <div class="table-responsive">
                      <div class="card-header bg-light text-dark d-flex justify-content-between align-items-center py-3">
                         <h5 class="mb-0 fw-bold"><i class="bi bi-collection me-2 text-warning"></i>Mode de payment</h5>
+                           <span class="badge bg-success px-100" id="colisCount">Total :{{ calculateTotal() }}DT</span>
                         <select (change)="modeDePayment($event)" id="sessionFilter" class="form-select form-select-sm w-auto" >
                             
                             <option value="espece">Espèce</option>
