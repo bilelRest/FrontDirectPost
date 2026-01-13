@@ -143,8 +143,8 @@
             </div>
           </div>
           <div *ngIf="isNatParcel"  class="col-md-2" id="typeappelofre">
-            <select (change)="setAppelOffre($event)" id="itemTypeoffre" name="typeOffre" class="form-select form-select-sm border-primary">
-              <option value="Normal">Normal</option>
+            <select (change)="setAppelOffre($event)" [(ngModel)]="selectedtype" id="itemTypeoffre" name="typeOffre" class="form-select form-select-sm border-primary">
+              <option selected value="Normal">Normal</option>
               <option value="Appel">Appel d'offre</option>
             </select>
           </div>

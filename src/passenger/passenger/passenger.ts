@@ -87,7 +87,7 @@ weight:any
     adress: '',
     postalCode: null,
     city: '',
-    country: '',
+    country: 'Tunisie',
     sendEmail: '',
     createdAt: new Date()
   
@@ -102,7 +102,7 @@ weight:any
     adress: '',
     postalCode: null,
     city: '',
-    country: '',
+    country: 'Tunisie',
     recEmail: '',
     createdAt:new Date
   
@@ -119,7 +119,7 @@ weight:any
   cheque:boolean=false;
 pochettes:Pochette[]=[]
 today: Date = new Date();
-  
+  selectedtype:string='Normal'
   constructor(private passenger_service: PassengerService,private router:Router,private cdr: ChangeDetectorRef) {
 
     afterNextRender(() => {
@@ -286,7 +286,7 @@ this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
  adress: '',
  postalCode: null,
  city: '',
- country: '',
+ country: 'Tunisie',
  recEmail: '',
  createdAt:new Date
 
@@ -295,6 +295,8 @@ this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
      this.parcels.push(response)
      this.parcel.price=0
      this.prix=0
+         this.selectedtype = 'Normal';
+
 
       // Optionnel : réinitialiser le formulaire ici
       this.cdr.detectChanges();
