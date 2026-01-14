@@ -128,8 +128,72 @@ today: Date = new Date();
       }, 0);
     });
   }
+  supprimerColis(parcel: any) {
+  // Use parameter name consistently (not 'p')
+  this.parcel = { ...parcel };
   
+  const trackingNumber = this.parcel.trackingNumber?.formattedParcelId || 'N/A';
+  const message = `Êtes-vous sûr de vouloir supprimer ce colis ?\n${trackingNumber}`;
+  
+  if (confirm(message)) {
+    this.passenger_service.deleteParcel(this.parcel).subscribe({
+      next: (data) => {
+        // Update the parcels list
+        this.parcels = this.parcels.filter(
+          p => p.trackingNumber?.formattedParcelId !== data.trackingNumber?.formattedParcelId
+        );
+         this.cdr.detectChanges();
+        
+        // Optional: Show success message
+        console.log('Colis supprimé avec succès');
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression:', err);
+        alert("Erreur lors de la suppression du colis. Veuillez réessayer.");
+      }
+    });
+  }
+ 
+}
+editerPochette(p: any) {
+this.pochette={... p}
+this.currentSender={...p.sender}
 
+console.log(this.parcel.weight)
+
+
+  console.log(this.parcel)
+
+}
+supprimerPochette(p: any){
+  this.pochette={... p}
+  const confirmed=confirm("Etes vous sur de vouloir supprimé cette pochette ?\n"+this.pochette.typePochette+"-"+this.pochette.quantite)
+  this.passenger_service.deletepochette(this.pochette).subscribe({
+    next: (data) => {
+      // Update the parcels list
+      this.pochettes = this.pochettes.filter(
+        p => p.id !== data.id
+      );
+       this.cdr.detectChanges();
+      
+
+    }})
+  
+}
+editerColis(p: any) {
+this.parcel={... p}
+this.currentReceiver={...p.receiver}
+this.parcel.trackingNumber={...p.trackingNumber}
+this.currentSender={...p.sender}
+this.prix=this.parcel.price
+console.log(this.prix)
+this.weight=this.parcel.weight
+console.log(this.parcel.weight)
+
+
+  console.log(this.parcel)
+
+}
 validerPayment() {
   
   if(this.cheque && (this.payment.cheque == '' || this.payment.banque == '')) {
@@ -201,32 +265,53 @@ ischeque(t:number){
 }
 addPochette(event: any) {
   event.preventDefault(); 
- // console.log(this.currentSender)// Empêche le rechargement de la page
-if(this.currentSender.sendName=='' && this.currentSender.sendSocialReason=='' ){
-    alert("Veuillez remplir les données de l\'expediteur :\n Nom complet ou bien raison sociale")
+
+  // 1. Vérifications de base
+  if (!this.currentSender.sendName && !this.currentSender.sendSocialReason) {
+    alert("Veuillez remplir les données de l'expéditeur");
+    return;
   }
   if (!this.pochette.typePochette || this.pochette.quantite <= 0) {
     alert("Veuillez choisir un type et une quantité valide");
     return;
   }
 
-  // Calcul du prix
+  // 2. Calcul du prix
   const prixUnitaire = this.TARIFS_POCHETTES[this.pochette.typePochette] || 0;
-  this.pochette.totalPrice = prixUnitaire * this.pochette.quantite;
-  this.pochette.sender=this.currentSender;
-  console.log("Pochette a envoyer  "+this.pochette)
-  this.passenger_service.addPochetteToOperation(this.opFormatted,this.pochette).subscribe({next:data=>{
-    console.log(data)
-    this.pochettes=data.pochette
-  },error:(err)=>{
-    console.log(err)
-  }})
-  
+  const totalCalcule = prixUnitaire * this.pochette.quantite;
 
-  console.log(`Ajout de ${this.pochette.quantite} pochettes ${this.pochette.typePochette}. Prix: ${this.pochette.totalPrice}`);
-  
-  // Ici, vous pouvez ajouter l'objet à une liste (tableau) de pochettes
-  // this.maListeDeCommande.push({...this.pochette});
+  // 3. Création de l'objet complet (Clone respectant l'interface Pochette)
+  // On utilise le spread operator (...) pour copier l'existant 
+  // puis on écrase/ajoute les propriétés obligatoires.
+  const pochetteAEnvoyer: Pochette = {
+    ...this.pochette,           // Copie les propriétés existantes
+    totalPrice: totalCalcule,   // Assure le bon prix
+    sender: this.currentSender, // Ajoute l'expéditeur (obligatoire)
+    createdAt: new Date(),      // Ajoute la date (obligatoire)
+    deleted: false              // Ajoute le flag (obligatoire)
+  };
+
+  console.log("Envoi de la pochette :", pochetteAEnvoyer);
+
+  // 4. Appel au service
+  this.passenger_service.addPochetteToOperation(this.opFormatted, pochetteAEnvoyer).subscribe({
+    next: (data) => {
+      this.pochettes = data.pochette;
+      
+      // Réinitialisation après succès
+      this.pochette = {
+        typePochette: '',
+        quantite: 1,
+        totalPrice: 0,
+        createdAt: new Date(),
+        deleted: false,
+        sender: {} as Sender
+      };
+      
+      this.cdr.detectChanges();
+    },
+    error: (err) => console.error(err)
+  });
 }
   // Calcul du total des prix des colis
 calculateTotal(): number {
@@ -265,47 +350,89 @@ setAppelOffre(event:any){
     }})
   }
   validerEnvoie(){
+
     this.parcel.sender=this.currentSender;
+
     this.parcel.receiver=this.currentReceiver;
+
     this.parcel.price=this.prix;
+
     this.parcel.weight=this.weight;
-    
+
+   
+
 this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
+
     next: (response) => {
+
       console.log('Colis ajouté avec succès !', response);
+
   this.preparePrint() ;
 
+this.parcels=this.parcels.filter(p=>p.parcelId!=response.parcelId)
+
+
+
      this.parcel.trackingNumber=response.trackingNumber
-    // this.loadNewOperation()
-    // this.chargerOperationApresAjoutColis(localStorage.getItem('op')?localStorage.getItem('op'):this.opFormatted)
+
+   
+
      this.currentReceiver={
+
  recId: 0,
+
  recName: '',
+
  recSocialReason: '',
+
  recTel: null,
+
  adress: '',
+
  postalCode: null,
+
  city: '',
+
  country: 'Tunisie',
+
  recEmail: '',
+
  createdAt:new Date
 
+
+
  }
+
      this.weight=null
+
      this.parcels.push(response)
+
      this.parcel.price=0
+
      this.prix=0
+
          this.selectedtype = 'Normal';
 
 
+
+
+
       // Optionnel : réinitialiser le formulaire ici
+
       this.cdr.detectChanges();
+
     },
+
     error: (err) => {
+
       console.error('Erreur lors de l\'ajout', err);
+
       alert('Erreur lors de l\'enregistrement');
+
     }
+
   });
+
   }
   calculerPrix(){
     if(this.weight>30) {this.overweignt=true}else{this.overweignt=false};

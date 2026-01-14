@@ -289,8 +289,9 @@ Ajouter                    </button>
         <th>Quantité</th>
         <th>Destinataire</th>
         <th>Raison Sociale</th>
-        <th>Poids (kg)</th>
+        <th>Poids(kg)\Type </th>
         <th>Prix (TND)</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -299,6 +300,10 @@ Ajouter                    </button>
         <td>{{ p.receiver.recSocialReason || 'Particulier' }}</td>
         <td>{{ p.weight }}</td>
         <td>{{ p.price | number:'1.3-3' }}</td>
+        <td>
+          <button title="Modifier" type="button" (click)="editerColis(p)" class="btn btn-outline-info"><i class="bi bi-pencil-square"></i></button>
+          <button type="button" title="Supprimer" (click)="supprimerColis(p)" class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+        </td>
       </tr>
     </tbody>
     <tbody>
@@ -307,8 +312,12 @@ Ajouter                    </button>
         <td>{{p.quantite}}</td> 
         <td>{{ p.sender.sendName || 'N/A' }}</td>
         <td>{{ p.sender.sendSocialReason || 'Particulier' }}</td>
-        <td>--</td>
+        <td>{{p.typePochette}}</td>
         <td>{{ p.totalPrice | number:'1.3-3' }}</td>
+         <td>
+          <button title="Modifier" type="button" (click)="editerPochette(p)" class="btn btn-outline-info"><i class="bi bi-pencil-square"></i></button>
+          <button type="button" title="Supprimer" (click)="supprimerPochette(p)" class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+        </td>
       </tr>
     </tbody>
     <tfoot class="table-light font-weight-bold">
