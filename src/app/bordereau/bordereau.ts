@@ -79,9 +79,9 @@ export class Bordereau implements OnInit {
     window.print();
 
     // Suppression propre après impression
-    setTimeout(() => {
+    
       localStorage.removeItem("currentop");
       localStorage.removeItem("op");
-    }, 2000);
+    
   }
 }}

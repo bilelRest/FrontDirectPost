@@ -1,7 +1,7 @@
 import { afterNextRender, ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 import { PassengerService, Receiver, Sender,Operation, Parcel, TrackingNumber, Pochette, Payment } from '../../app/passenger_service/passenger-service';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, NgForm } from '@angular/forms';
 import JsBarcode from 'jsbarcode';
 import { response } from 'express';
 import { Router } from '@angular/router';
@@ -32,6 +32,7 @@ rppimarchand:boolean=false;
 emsimarchand:boolean=false;
 parcels:Parcel[]=[]
 parcel: Parcel = {
+  normal:true,
   width: null,
   height: null,
   lenght: null,
@@ -217,13 +218,15 @@ validerPayment() {
         localStorage.setItem("currentop", JSON.stringify(data));
         
         // Ouvrir le bordereau dans un nouvel onglet
-        const printUrl = this.router.createUrlTree(['/bordereau']).toString();
-        window.open(printUrl, '_blank');
+      const url = this.router.serializeUrl(this.router.createUrlTree(['/bordereau']));
+
+      // 1. On lance l'ouverture de l'onglet
+      window.open(url, '_blank', 'noopener')
         
         // Rediriger vers home après un court délai
         setTimeout(() => {
           this.router.navigate(['/home']);
-        }, 500);
+        }, 1000);
       }
     },
     error: (err) => {
@@ -333,13 +336,28 @@ calculateTotal(): number {
 
   return total;
 }
+isAppel:boolean=false
 isOffre:boolean=false
-setAppelOffre(event:any){
-  if(event.target.value=='Appel'){
-    this.isOffre=true;
-  }else{
-    this.isOffre=false;
-  }
+setAppelOffre(event: any) {
+  // Si vous utilisez ngModel, cette ligne suffit pour la logique visuelle
+  this.isOffre = !this.parcel.normal; 
+  
+  // Forcer la valeur si nécessaire (si event.target.value est utilisé)
+  // Note: avec [ngValue], event.target.value est souvent une string "false" ou "true"
+}
+printableParcel:Parcel={
+  normal:true,
+  createdAt: '',
+  width: null,
+  height: null,
+  lenght: null,
+  price: 0,
+  weight: null,
+  deleted: false,
+  receiver: {} as Receiver,
+  sender: {} as Sender,
+  operation: {} as Operation,
+  trackingNumber: {} as TrackingNumber,
 
 }
 
@@ -349,91 +367,70 @@ setAppelOffre(event:any){
       console.log(this.parcels)
     }})
   }
-  validerEnvoie(){
+validerEnvoie(form: NgForm) {
+  this.parcel.sender = this.currentSender;
+  this.parcel.receiver = this.currentReceiver;
+  this.parcel.price = this.prix;
+  this.parcel.weight = this.weight;
 
-    this.parcel.sender=this.currentSender;
-
-    this.parcel.receiver=this.currentReceiver;
-
-    this.parcel.price=this.prix;
-
-    this.parcel.weight=this.weight;
-
-   
-
-this.passenger_service.addParcel(this.parcel,this.opFormatted).subscribe({
-
+  this.passenger_service.addParcel(this.parcel, this.opFormatted).subscribe({
     next: (response) => {
+      this.printableParcel = response;
+      this.preparePrint(this.printableParcel);
+      this.parcels.push(response);
 
-      console.log('Colis ajouté avec succès !', response);
-
-  this.preparePrint() ;
-
-this.parcels=this.parcels.filter(p=>p.parcelId!=response.parcelId)
-
-
-
-     this.parcel.trackingNumber=response.trackingNumber
-
-   
-
-     this.currentReceiver={
-
- recId: 0,
-
- recName: '',
-
- recSocialReason: '',
-
- recTel: null,
-
- adress: '',
-
- postalCode: null,
-
- city: '',
-
- country: 'Tunisie',
-
- recEmail: '',
-
- createdAt:new Date
-
-
-
- }
-
-     this.weight=null
-
-     this.parcels.push(response)
-
-     this.parcel.price=0
-
-     this.prix=0
-
-         this.selectedtype = 'Normal';
-
-
-
-
-
-      // Optionnel : réinitialiser le formulaire ici
-
+      // Appel de la réinitialisation complète
+      this.resetToutLeFormulaire(form);
+      
       this.cdr.detectChanges();
-
     },
-
     error: (err) => {
-
       console.error('Erreur lors de l\'ajout', err);
-
       alert('Erreur lors de l\'enregistrement');
-
     }
-
   });
+}
 
-  }
+resetToutLeFormulaire(form: NgForm) {
+  // 1. Réinitialisation de l'objet principal (Le Modèle)
+  this.parcel = {
+    normal: true, // Valeur par défaut
+    width: null,
+    height: null,
+    lenght: null,
+    price: 0,
+    weight: null,
+    deleted: false,
+    createdAt: new Date(),
+    sender: {} as Sender,
+    receiver: {} as Receiver,
+    operation: { formattedId: '' } as Operation,
+    trackingNumber: {} as TrackingNumber,
+  };
+
+  // 2. Réinitialisation des variables de l'interface (UI)
+  this.weight = null;
+  this.prix = 0;
+  this.isOffre = false;
+  this.isMarchandise = false;
+  this.isNatParcel = true;
+
+  this.currentReceiver = {
+    recId: 0, recName: '', recSocialReason: '', recTel: null,
+    adress: '', postalCode: null, city: '', country: 'Tunisie',
+    recEmail: '', createdAt: new Date()
+  };
+
+  // 3. Réinitialisation du formulaire Angular (L'Affichage)
+  // TRÈS IMPORTANT : Les clés ici doivent correspondre aux attributs "name" de votre HTML
+  form.resetForm({
+    typeOffre: true,       // Doit être true (booléen) pour correspondre à [ngValue]="true"
+    btnradio: 'EMS National',
+    typeItem: 'Document',
+    quantity: 1,
+    weight: null
+  });
+}
   calculerPrix(){
     if(this.weight>30) {this.overweignt=true}else{this.overweignt=false};
     if(this.isNatParcel){
@@ -496,25 +493,54 @@ if(this.currentReceiver.country!='Tunisie'){
   this.isNat=true;
 }
 }
-// N'oubliez pas de déclarer Bootstrap pour éviter les erreurs TS
+selctedParcel:Parcel={
+  normal: false,
+  createdAt: '',
+  width: null,
+  height: null,
+  lenght: null,
+  price: 0,
+  weight: null,
+  deleted: false,
+  receiver: {} as Receiver,
+  trackingNumber: {} as TrackingNumber,
+  operation: {} as Operation,   
+  sender: {} as Sender,
 
-preparePrint() {
-  // 1. On génère le code à barres dans la modale
-  // On utilise un petit timeout pour s'assurer que l'élément SVG est prêt
+}
+// N'oubliez pas de déclarer Bootstrap pour éviter les erreurs TS
+offreprint=this.parcel.normal;
+preparePrint(p: any) {
+  // On crée une copie profonde pour éviter les problèmes de référence
+  this.selctedParcel = JSON.parse(JSON.stringify(p));
+  
+  // On synchronise printableParcel pour le HTML
+  this.printableParcel = this.selctedParcel;
+
+  // Forcer la détection pour Angular
+  this.cdr.detectChanges();
+
   setTimeout(() => {
-    JsBarcode("#trackingBarcode", this.parcel.trackingNumber?.formattedParcelId || "N/A", {
+    const barcodeVal = this.selctedParcel.trackingNumber?.formattedParcelId || "N/A";
+    JsBarcode("#trackingBarcode", barcodeVal, {
       format: "CODE128",
       width: 2.5,
       height: 70,
       displayValue: true
     });
-  }, 100);
-
-  // 2. On ouvre la modale
-  const modalElem = document.getElementById('printModal');
-  const modal = new bootstrap.Modal(modalElem);
-  modal.show();
+    
+    const modalElem = document.getElementById('printModal');
+    if (modalElem) {
+      const modal = new bootstrap.Modal(modalElem);
+      modal.show();
+    }
+  }, 150);
 }
+rePrint(p: any) {
+  this.preparePrint(p); // On appelle directement la préparation propre
+}
+
+  
 
 confirmAndPrint() {
   window.print();

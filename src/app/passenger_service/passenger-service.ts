@@ -13,7 +13,9 @@ export interface Operation {
   pochette: any[];
 }
 export interface Parcel {
-  parcelId?: number;          // Optionnel car généré par le backend
+  normal:boolean;
+  parcelId?: number | null;           // Correspond à ton Long parcelId
+  formattedParcelId?: string// Optionnel car généré par le backend
   createdAt: string | Date;   // LocalDate arrive souvent en string ISO (2026-01-12)
   width: number | null;
   height: number | null;
