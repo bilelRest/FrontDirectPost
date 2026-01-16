@@ -125,6 +125,7 @@ window.open('/bordereau', '_blank');  }
     this.passengerService.deteleOperation(p).subscribe({
       next: (data) => {
         this.loadOps();
+        this.applyFilters()
       //  this.operationList = this.operationList.filter(op => op.formattedId !== data.formattedId);
        // this.displayData = this.displayData.filter(item => item.operation.formattedId !== data.formattedId);
        }
