@@ -119,17 +119,30 @@ reprintEtiquette(item:any){
     const reprint=JSON.stringify(p);
     localStorage.setItem('reprintOp',reprint)
 window.open('/bordereau', '_blank');  }
-  supprimer(p: any) {
-    const confirmed:boolean=confirm("Etes vous sur de vouloir supprimer cette opération ?"+p)
-    if(!confirmed) return;
-    this.passengerService.deteleOperation(p).subscribe({
-      next: (data) => {
-        this.loadOps();
-        this.applyFilters()
-      //  this.operationList = this.operationList.filter(op => op.formattedId !== data.formattedId);
-       // this.displayData = this.displayData.filter(item => item.operation.formattedId !== data.formattedId);
-       }
-    });
-  
-  }
+supprimer(p: any) {
+  const confirmed = confirm("Voulez-vous vraiment annuler cette opération ?");
+  if (!confirmed) return;
+
+  this.passengerService.deteleOperation(p).subscribe({
+    next: () => {
+      // 1. Mise à jour locale immédiate pour la réactivité visuelle
+      this.displayData.forEach(item => {
+        if (item.operation.formattedId === p) {
+          item.operation.cancelled = true; // On force le flag à true
+          item.operation.validated = false; // On s'assure qu'il n'est plus "Terminé"
+        }
+      });
+
+      // 2. Optionnel : Recharger pour être 100% synchro avec la DB
+      // this.loadOps(); 
+
+      // 3. Forcer Angular à rafraîchir les badges
+      this.applyFilters();
+      this.cdr.detectChanges();
+      
+      console.log("Statut mis à jour en local");
+    },
+    error: (err) => alert("Erreur lors de l'annulation")
+  });
+}
 }
