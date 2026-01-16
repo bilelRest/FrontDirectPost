@@ -120,7 +120,7 @@ reprintEtiquette(item:any){
     localStorage.setItem('reprintOp',reprint)
 window.open('/bordereau', '_blank');  }
   supprimer(p: any) {
-    const confirmed:boolean=confirm("Etes vous sur de vouloir supprimer cette opération ?"+p.formattedId)
+    const confirmed:boolean=confirm("Etes vous sur de vouloir supprimer cette opération ?"+p)
     if(!confirmed) return;
     this.passengerService.deteleOperation(p).subscribe({
       next: (data) => {
