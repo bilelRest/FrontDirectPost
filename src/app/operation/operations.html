@@ -32,22 +32,104 @@
   <tr *ngFor="let item of filteredData" class="cursor-pointer">
     <td>{{ item.parcel.createdAt | date:'dd/MM/yyyy' }}</td>
     <td>{{ item.operation.formattedId }}</td>
-    <td>{{ item.parcel.trackingNumber?.formattedParcelId }}</td>
+    <td>{{ item.parcel.trackingNumber?.formattedParcelId }}
+      <button (click)="reprintEtiquette(item.parcel)" class="btn btn-success btn-sm border ms-2" title="Reimprimer etiquette">
+        <i class="bi bi-printer"></i>
+      </button>
+    </td>
     <td>{{ item.parcel.sender.sendName }}</td>
     <td>{{ item.parcel.sender.sendTel }}</td>
     <td>
-      <span *ngIf="item.operation.cancelled" class="badge bg-danger">Annulée</span>
-      <span *ngIf="item.operation.formattedId === operationEncour" class="badge bg-warning text-dark">En cours</span>
-      <span *ngIf="item.operation.validated" class="badge bg-success">Terminée</span>
+      <span *ngIf="item.operation.validated === false && item.operation.formattedId != operationEncour && item.operation.cancelled === false" class="badge bg-danger">Annulée</span>
+      <span *ngIf="item.operation.formattedId === operationEncour" class="badge bg-info text-dark">En cours</span>
+      <span *ngIf="item.operation.validated && item.operation.cancelled === false" class="badge bg-success">Terminé</span>
+      <span *ngIf="item.operation.cancelled === true" class="badge bg-warning">Supprimé</span>
     </td>
     <td class="text-end pe-4">
-      <button class="btn btn-light btn-sm border">
-        <i class="bi bi-eye text-primary"></i>
+      <button title="Visualiser" *ngIf="item.operation.formattedId === operationEncour" (click)="modifier()" class="btn btn-light btn-sm border">
+        <i class="bi bi-pencil-square text-primary"></i>
+      </button>
+      <button title="Réimprimer Bordereu" *ngIf="item.operation.formattedId != operationEncour" (click)="reimprimerOperation(item.operation)" class="btn btn-dangert btn-sm border">
+        <i class="bi bi-printer text-success"></i>
+      </button>
+      <button title="Supprimer" *ngIf="item.operation.validated ===true && item.operation.cancelled === false" (click)="supprimer(item.operation.formattedId)" class="btn btn-light btn-sm border">
+        <i class="bi bi-trash text-danger"></i>
       </button>
     </td>
   </tr>
 </tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="printModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title"><i class="bi bi-eye me-2"></i>Aperçu de l'étiquette d'envoi</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body bg-light">
+        
+        <div id="label-to-print" class="dhl-label shadow-sm bg-white p-3">
+          <div class="label-header d-flex justify-content-between align-items-center border-bottom border-3 border-dark pb-2">
+            <h2 class="fw-bold mb-0">DirectPost <span class="fs-6">EXPRESS</span></h2>
+            <div class="text-end">
+              <div class="fw-bold">DOMESTIC SERVICE</div>
+              <small>{{ selectedParcel.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>
+            </div>
+          </div>
+
+          <div class="row g-0 border-bottom border-dark">
+            <div *ngIf="selectedParcel.normal === false" class="col-6 border-end border-dark p-2 bg-light d-flex align-items-center justify-content-center">
+              <div class="fw-bold"><h1>Appel d'offre</h1></div>
+            </div>
+            
+            <div *ngIf="selectedParcel.normal === true" class="col-6 border-end border-dark p-2">
+              <small class="text-uppercase fw-bold d-block" style="font-size: 0.6rem;">From (Expéditeur):</small>
+              <div class="fw-bold">{{ selectedParcel.sender.sendName }}</div>
+              <div class="small">{{ selectedParcel.sender.sendSocialReason }}</div>
+              <div class="small">{{ selectedParcel.sender.adress }}</div>
+              <div class="small">{{ selectedParcel.sender.postalCode }} {{ selectedParcel.sender.city }}</div>
+              <div class="small">Tél: {{ selectedParcel.sender.sendTel }}</div>
+            </div>
+
+            <div class="col-6 p-2 bg-white">
+              <small class="text-uppercase fw-bold d-block" style="font-size: 0.6rem;">To (Destinataire):</small>
+              <div class="fw-bold fs-5 text-uppercase">{{ selectedParcel.receiver.recName }}</div>
+              <div class="small">{{ selectedParcel.receiver.recSocialReason }}</div>
+              <div>{{ selectedParcel.receiver.adress }}</div>
+              <div class="fw-bold">{{ selectedParcel.receiver.postalCode }} {{ selectedParcel.receiver.city }}</div>
+              <div class="fw-bold text-uppercase">{{ selectedParcel.receiver.country }}</div>
+              <div class="small">Tél: {{ selectedParcel.receiver.recTel }}</div>
+            </div>
+          </div>
+
+          <div class="row g-0 border-bottom border-dark text-center py-2">
+            <div class="col-4 border-end border-dark">
+              <small class="d-block">Poids</small>
+              <span class="fw-bold fs-4">{{ selectedParcel.weight }} KG</span>
+            </div>
+            <div class="col-8">
+              <small class="d-block">Numéro de Suivi</small>
+              <span class="fw-bold fs-4">{{ selectedParcel.trackingNumber?.formattedParcelId }}</span>
+            </div>
+          </div>
+
+          <div class="text-center py-3">
+            <svg id="trackingBarcode"></svg>
+          </div>
+
+          <div class="text-center border-top border-dark pt-1">
+            <small style="font-size: 0.7rem;">ID Opération: {{ selectedParcel.operationId }} | Poste Tunisienne - DirectPost</small>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">Imprimer</button>
+      </div>
     </div>
   </div>
 </div>

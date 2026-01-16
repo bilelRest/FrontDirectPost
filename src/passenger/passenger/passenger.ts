@@ -374,21 +374,59 @@ printableParcel:Parcel={
       console.log(this.parcels)
     }})
   }
+    isReceiverValid(): boolean {
+  const r = this.currentReceiver;
+  return !!(
+    r.recName?.trim() && 
+    r.recTel && 
+    r.adress?.trim() && 
+    r.postalCode && 
+    r.city?.trim()
+  );
+}
+ isSenderValid(): boolean {
+  const r = this.currentSender;
+  return !!(
+    r.sendName?.trim() && 
+    r.sendTel && 
+    r.adress?.trim() && 
+    r.postalCode && 
+    r.city?.trim()
+  );
+}
+
 validerEnvoie(form: NgForm) {
+  // 1. Vérification Expéditeur
+  if (!this.isSenderValid()) {
+    alert("Données d'expéditeur manquantes !");
+    return; // On arrête tout
+  }
+
+  // 2. Vérification Destinataire
+  if (!this.isReceiverValid()) {
+    alert("Données de destinataire manquantes !");
+    return; // On arrête tout
+  }
+
+  // 3. Vérification Poids et Prix
+  if (!this.prix || !this.weight || this.prix === 0 || this.weight === 0) {
+    alert("Poids ou prix invalide !");
+    return; // On arrête tout
+  }
+
+  // Si on arrive ici, tout est valide
   this.parcel.sender = this.currentSender;
   this.parcel.receiver = this.currentReceiver;
   this.parcel.price = this.prix;
   this.parcel.weight = this.weight;
 
+  // Envoi au service
   this.passenger_service.addParcel(this.parcel, this.opFormatted).subscribe({
     next: (response) => {
       this.printableParcel = response;
       this.preparePrint(this.printableParcel);
       this.parcels.push(response);
-
-      // Appel de la réinitialisation complète
       this.resetToutLeFormulaire(form);
-      
       this.cdr.detectChanges();
     },
     error: (err) => {

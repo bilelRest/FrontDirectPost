@@ -97,15 +97,20 @@ export interface Payment{
 export class PassengerService {
 constructor(private http: HttpClient) { }
  baserUrl='https://directpost.apirest.pro/api/operation/passenger';
-  //  baserUrl='http://localhost:6161/api/operation/passenger';
+   // baserUrl='http://localhost:6161/api/operation/passenger';
      
+
+deteleOperation(op:string){
+  return this.http.get(this.baserUrl+"/deleteop?op="+op);
+
+}
+
      validatePayment(op:string,payment:Payment):Observable<Operation>{
       return this.http.post<Operation>(this.baserUrl+"/payment?op="+op,payment)
      }
      deleteParcel(parcel:Parcel):Observable<Parcel>{
       return this.http.post<Parcel>(this.baserUrl+"/deleteparcel",parcel)
      
-
      }
      loaodAllOperations():Observable<Operation[]>{
       return this.http.get<Operation[]>(this.baserUrl+"/operations");
