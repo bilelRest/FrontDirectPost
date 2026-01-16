@@ -6,16 +6,26 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const platformId = inject(PLATFORM_ID);
 
-  // Vérifie si on est dans le navigateur (client)
   if (isPlatformBrowser(platformId)) {
     const token = localStorage.getItem('token');
-    if (token) return true;
-  }
 
-  // Si on est sur le serveur ou sans token, on redirige vers le login
-  // Note: le serveur ne fera pas la redirection visuelle, il attendra le client
-  if (isPlatformBrowser(platformId)) {
-    router.navigate(['/auth/login']);
+    if (token && !isTokenExpired(token)) {
+      return true; // Le token existe ET il est valide
+    }
+
+    // Si le token est expiré ou absent, on nettoie et on redirige
+    localStorage.removeItem('token'); 
+    return router.createUrlTree(['/auth/login']);
   }
   return false;
 };
+
+// Fonction utilitaire pour vérifier l'expiration (exemple simple)
+function isTokenExpired(token: string): boolean {
+  try {
+    const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
+    return (Math.floor((new Date).getTime() / 1000)) >= expiry;
+  } catch {
+    return true; // Si le token est malformé, on considère qu'il est expiré
+  }
+}

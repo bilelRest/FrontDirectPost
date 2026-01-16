@@ -32,6 +32,8 @@ rppimarchand:boolean=false;
 emsimarchand:boolean=false;
 parcels:Parcel[]=[]
 parcel: Parcel = {
+  operationId: '',
+  
   normal:true,
   width: null,
   height: null,
@@ -44,6 +46,7 @@ parcel: Parcel = {
   receiver: {} as Receiver,
   // Initialisation de l'objet operation pour que le lien existe
   operation: {
+    total:0,
     banque:'',
     cheque:'',
     formattedId: ''
@@ -55,7 +58,9 @@ parcel: Parcel = {
   } as TrackingNumber,
 };
 operation_en_cour:Operation={
+  deleted:false,
   opId: 0,
+  total: 0,
   banque: '',
   cheque: '',
   formattedId: '',
@@ -346,6 +351,8 @@ setAppelOffre(event: any) {
   // Note: avec [ngValue], event.target.value est souvent une string "false" ou "true"
 }
 printableParcel:Parcel={
+  operationId: '',
+  
   normal:true,
   createdAt: '',
   width: null,
@@ -394,6 +401,7 @@ validerEnvoie(form: NgForm) {
 resetToutLeFormulaire(form: NgForm) {
   // 1. Réinitialisation de l'objet principal (Le Modèle)
   this.parcel = {
+    operationId: '',
     normal: true, // Valeur par défaut
     width: null,
     height: null,
@@ -494,6 +502,8 @@ if(this.currentReceiver.country!='Tunisie'){
 }
 }
 selctedParcel:Parcel={
+  operationId: '',
+  
   normal: false,
   createdAt: '',
   width: null,

@@ -1,0 +1,39 @@
+/* Couleurs de badges douces (Soft Badges) */
+.bg-soft-success { background-color: #d1fae5; color: #065f46; }
+.bg-soft-warning { background-color: #fef3c7; color: #92400e; }
+.bg-soft-danger  { background-color: #fee2e2; color: #991b1b; }
+.bg-soft-info    { background-color: #e0f2fe; color: #075985; }
+.bg-soft-secondary { background-color: #f1f5f9; color: #475569; }
+
+.cursor-pointer {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8fafc;
+  transform: scale(1.005);
+}
+
+.card {
+  border: none;
+}
+
+thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* Animation de transition */
+.animate__fadeIn {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

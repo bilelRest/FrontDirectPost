@@ -1,0 +1,53 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark">
+      Historique des opérations
+    </h2>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
+  <tr>
+    <th>Date</th>
+    <th>ID Opération</th>
+    <th>Num Envoi</th>
+    <th>Expéditeur</th>
+    <th>Tel°</th>
+    <th>Status</th>
+    <th class="text-end pe-4">Actions</th>
+  </tr>
+  <tr class="bg-white">
+    <td><input type="text" class="form-control form-control-sm" placeholder="Filtrer date..." [(ngModel)]="filters.date" (input)="applyFilters()"></td>
+    <td><input type="text" class="form-control form-control-sm" placeholder="Filtrer ID..." [(ngModel)]="filters.id" (input)="applyFilters()"></td>
+    <td><input type="text" class="form-control form-control-sm" placeholder="Filtrer envoi..." [(ngModel)]="filters.envoi" (input)="applyFilters()"></td>
+    <td><input type="text" class="form-control form-control-sm" placeholder="Filtrer exp..." [(ngModel)]="filters.exp" (input)="applyFilters()"></td>
+    <td><input type="text" class="form-control form-control-sm" placeholder="Filtrer tel..." [(ngModel)]="filters.tel" (input)="applyFilters()"></td>
+    <td></td>
+    <td></td>
+  </tr>
+</thead>
+<tbody>
+  <tr *ngFor="let item of filteredData" class="cursor-pointer">
+    <td>{{ item.parcel.createdAt | date:'dd/MM/yyyy' }}</td>
+    <td>{{ item.operation.formattedId }}</td>
+    <td>{{ item.parcel.trackingNumber?.formattedParcelId }}</td>
+    <td>{{ item.parcel.sender.sendName }}</td>
+    <td>{{ item.parcel.sender.sendTel }}</td>
+    <td>
+      <span *ngIf="item.operation.cancelled" class="badge bg-danger">Annulée</span>
+      <span *ngIf="item.operation.formattedId === operationEncour" class="badge bg-warning text-dark">En cours</span>
+      <span *ngIf="item.operation.validated" class="badge bg-success">Terminée</span>
+    </td>
+    <td class="text-end pe-4">
+      <button class="btn btn-light btn-sm border">
+        <i class="bi bi-eye text-primary"></i>
+      </button>
+    </td>
+  </tr>
+</tbody>
+      </table>
+    </div>
+  </div>
+</div>

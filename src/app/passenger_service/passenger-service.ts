@@ -2,6 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 export interface Operation {
+  deleted:boolean;
+  total:number;
   opId: number;
   banque:string;
   cheque:string;
@@ -23,6 +25,7 @@ export interface Parcel {
   price: number;
   weight: number | null ;
   deleted: boolean;
+  operationId:string
   
   // Relations (Objets imbriqués)
   operation?: Operation;      // Map vers 'operation' en Java
@@ -104,6 +107,10 @@ constructor(private http: HttpClient) { }
      
 
      }
+     loaodAllOperations():Observable<Operation[]>{
+      return this.http.get<Operation[]>(this.baserUrl+"/operations");
+     }
+
  loadNewOperation(op: string) {
   const params = new HttpParams().set('op', op);
   return this.http.get<Operation>(`${this.baserUrl}/new`, { params });

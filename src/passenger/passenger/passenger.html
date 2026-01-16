@@ -16,7 +16,7 @@
         <div class="row g-1">
           <div class="col-md-2 position-relative">
             <label for="senderTel">Téléphone</label>
-            <input id="senderTel" name="sendTel" type="tel" min="00000000" max="99999999" class="form-control form-control-sm" 
+            <input id="senderTel" required name="sendTel" type="tel" min="00000000" max="99999999" class="form-control form-control-sm" 
               [(ngModel)]="currentSender.sendTel" (input)="cheksender($event)">
             
             <div class="suggestion-box shadow border" *ngIf="filteredSenders.length > 0 && activeField === 'tel'">
@@ -28,10 +28,10 @@
 
           <div class="col-md-3 position-relative">
             <label for="senderName">Nom Complet</label>
-            <input id="senderName" name="sendName" type="text" class="form-control form-control-sm" placeholder="Nom Complet"
+            <input id="senderName" name="sendName" type="text" required class="form-control form-control-sm" placeholder="Nom Complet"
               [(ngModel)]="currentSender.sendName" (input)="cheksender($event)">
 
-            <div class="suggestion-box shadow border" *ngIf="filteredSenders.length > 0 && activeField === 'name'">
+            <div class="suggestion-box shadow border"  *ngIf="filteredSenders.length > 0 && activeField === 'name'">
               <div class="suggestion-item p-2 border-bottom" *ngFor="let s of filteredSenders" (click)="selectSender(s)">
                 <small><strong>{{ s.sendName }}</strong> ({{ s.sendTel }})</small>
               </div>
@@ -50,10 +50,10 @@
             </div>
           </div>
 
-          <div class="col-md-4"><label for="senderAdress">Adresse</label><input id="senderAdress" name="adress" type="text" class="form-control form-control-sm" placeholder="Adresse" [(ngModel)]="currentSender.adress"></div>
-          <div class="col-md-2"><label for="senderVille">Ville</label><input id="senderVille" name="city" type="text" class="form-control form-control-sm" placeholder="Ville" [(ngModel)]="currentSender.city"></div>
-          <div class="col-md-2"><label for="senderPostal">Code Postal</label><input id="senderPostal" name="postalCode" type="text" class="form-control form-control-sm" placeholder="CP" [(ngModel)]="currentSender.postalCode"></div>
-          <div class="col-md-1"><label for="senderCountry">Gouvernorat</label><input id="senderCountry" name="country" value="Tunisie" class="form-control form-control-sm bg-light" readonly [(ngModel)]="currentSender.country"></div>
+          <div class="col-md-4"><label for="senderAdress">Adresse</label><input id="senderAdress" required name="adress" type="text" class="form-control form-control-sm" placeholder="Adresse" [(ngModel)]="currentSender.adress"></div>
+          <div class="col-md-2"><label for="senderVille">Ville</label><input id="senderVille" name="city" required type="text" class="form-control form-control-sm" placeholder="Ville" [(ngModel)]="currentSender.city"></div>
+          <div class="col-md-2"><label for="senderPostal">Code Postal</label><input id="senderPostal" required name="postalCode" type="text" class="form-control form-control-sm" placeholder="CP" [(ngModel)]="currentSender.postalCode"></div>
+          <div class="col-md-1"><label for="senderCountry">Gouvernorat</label><input id="senderCountry" required name="country" value="Tunisie" class="form-control form-control-sm bg-light" readonly [(ngModel)]="currentSender.country"></div>
           <div class="col-md-2"><label for="sendEmail">Email</label><input id="sendEmail" name="sendEmail" type="email" class="form-control form-control-sm" placeholder="Email" [(ngModel)]="currentSender.sendEmail"></div>
         </div>
       </div>
@@ -70,7 +70,7 @@
         <div class="row g-1">
             <div class="col-md-1">
                 <label for="recCountry">Pays</label>
-                <select id="recCountry" name="recCountry" class="form-select form-select-sm" (change)="coutryFilter()" [(ngModel)]="currentReceiver.country">
+                <select id="recCountry" name="recCountry" class="form-select form-select-sm" (change)="coutryFilter()" required [(ngModel)]="currentReceiver.country">
                     <option value="Tunisie" selected>Tunisie</option>
                         <option value="Algeria">Algérie</option>
                         <option value="Qatar">Qatar</option>
@@ -118,9 +118,9 @@
                 </div>
             </div>
 
-            <div class="col-md-3"><label for="receiverAdress">Adresse</label><input id="receiverAdress" name="recAdress" type="text" class="form-control form-control-sm" placeholder="Adresse" required [(ngModel)]="currentReceiver.adress"></div>
+            <div class="col-md-3"><label for="receiverAdress">Adresse</label><input id="receiverAdress" name="recAdress"  type="text" class="form-control form-control-sm" placeholder="Adresse" required [(ngModel)]="currentReceiver.adress"></div>
             <div class="col-md-2"><label for="receiverVille">Ville</label><input id="receiverVille" name="recVille" type="text" class="form-control form-control-sm" placeholder="Ville" required [(ngModel)]="currentReceiver.city"></div>
-            <div class="col-md-2"><label for="receiverPostal">Code Postal</label><input id="receiverPostal" name="recPostalCode" type="text" class="form-control form-control-sm" placeholder="CP" [(ngModel)]="currentReceiver.postalCode"></div>
+            <div class="col-md-2"><label for="receiverPostal">Code Postal</label><input id="receiverPostal" name="recPostalCode" required type="text" class="form-control form-control-sm" placeholder="CP" [(ngModel)]="currentReceiver.postalCode"></div>
             <div class="col-md-2"><label for="receiverMail">Email</label><input id="receiverMail" name="recEmail" type="email" class="form-control form-control-sm" placeholder="Email" [(ngModel)]="currentReceiver.recEmail"></div>
         </div>
     </div>
@@ -256,8 +256,9 @@ Ajouter                    </button>
 </div>
 <div class="table-responsive">
                      <div class="card-header bg-light text-dark d-flex justify-content-between align-items-center py-3">
+                                                 <span class="badge bg-success px-100" id="colisCount"><h3>Total :{{ calculateTotal() }}DT</h3></span>
+
                         <h5 class="mb-0 fw-bold"><i class="bi bi-collection me-2 text-warning"></i>Mode de payment</h5>
-                           <span class="badge bg-success px-100" id="colisCount">Total :{{ calculateTotal() }}DT</span>
                         <select (change)="modeDePayment($event)" id="sessionFilter" class="form-select form-select-sm w-auto" >
                             
                             <option value="espece">Espèce</option>
@@ -286,18 +287,19 @@ Ajouter                    </button>
   <table class="table table-striped table-hover">
     <thead class="table-dark">
       <tr>
-        <th>Quantité</th>
-        <th>Destinataire</th>
-        <th>Raison Sociale</th>
-        <th>Poids(kg)\Type </th>
+        <th>N° Envois \ Type</th>
+        <th>Dest - Rai Soc</th>
+        <th>Adresse</th>
+        <th>Pds\Qté </th>
         <th>Prix (TND)</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let p of parcels">
-        <td>1</td> <td>{{ p.receiver.recName || 'N/A' }}</td>
-        <td>{{ p.receiver.recSocialReason || 'Particulier' }}</td>
+        <td>{{ p.trackingNumber?.formattedParcelId }}</td> 
+        <td>{{ p.receiver.recName || 'N/A' }}-{{ p.receiver.recSocialReason || 'Particulier' }}</td>
+        <td>{{p.receiver.adress}}-{{p.receiver.city}}-{{p.receiver.postalCode}}-{{p.receiver.country}}</td>
         <td>{{ p.weight }}</td>
         <td>{{ p.price | number:'1.3-3' }}</td>
         <td>
@@ -311,10 +313,10 @@ Ajouter                    </button>
     <tbody>
       <tr *ngFor="let p of pochettes">
       
-        <td>{{p.quantite}}</td> 
-        <td>{{ p.sender.sendName || 'N/A' }}</td>
-        <td>{{ p.sender.sendSocialReason || 'Particulier' }}</td>
-        <td>{{p.typePochette}}</td>
+        <td>{{p.typePochette.toUpperCase()}}</td> 
+        <td>{{ p.sender.sendName || 'N/A' }}-{{ p.sender.sendSocialReason || 'Particulier' }}</td>
+        <td></td>
+        <td>{{p.quantite}}</td>
         <td>{{ p.totalPrice | number:'1.3-3' }}</td>
          <td>
           <button title="Modifier" type="button" (click)="editerPochette(p)" class="btn btn-outline-info"><i class="bi bi-pencil-square"></i></button>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Operation, Parcel, PassengerService, Pochette } from '../passenger_service/passenger-service';
+import { Operation, Parcel, PassengerService, Pochette, Sender } from '../passenger_service/passenger-service';
 import { Router, RouterLink } from '@angular/router'; // Importez RouterLink
 import { CommonModule } from '@angular/common'; // Importez CommonModule pour *ngFor et *ngIf
 
@@ -16,6 +16,8 @@ export class Bordereau implements OnInit {
   opid = localStorage.getItem("op") || "";
   
   operation: Operation = {
+    deleted: false,
+    total:0,
     opId: 0,
     banque: '',
     cheque: '',
@@ -26,7 +28,8 @@ export class Bordereau implements OnInit {
     parcel: [],
     pochette: []
   };
-   total=0;
+   totalPochette=0;
+   totalParcel=0;
   
   parcels: Parcel[] = [];
   pochettes:Pochette[]=[];
@@ -35,7 +38,20 @@ export class Bordereau implements OnInit {
   ngOnInit(): void {
    this.operation_en_cour() 
   }
-
+client:Sender={
+  sendId: null,
+  sendName: '',
+  sendSocialReason: '',
+  sendTel: null,
+  adress: '',
+  postalCode: null,
+  city: '',
+  country: '',
+  sendEmail: '',
+  createdAt: new Date()
+}
+mode:string="";
+dateOp:Date=new Date();
  operation_en_cour() {
   // 1. Vérification de sécurité : si l'objet est null, on arrête tout de suite
   if (!this.operation_en_cours) {
@@ -44,22 +60,28 @@ export class Bordereau implements OnInit {
     // this.router.navigate(['/']); 
     return;
   }
-
+for(let i=0;i<this.operation_en_cours.parcel.length;i++){
+  this.client=this.operation_en_cours.parcel[i].sender;
+}
   if (this.opid) {
     console.log("Operation au debut", this.operation_en_cours);
 
     // Utilisation sécurisée des données
     this.parcels = this.operation_en_cours.parcel || [];
     this.pochettes = this.operation_en_cours.pochette || [];
-
+if(this.operation_en_cours.banque != null && this.operation_en_cours.cheque != null){
+  this.mode='Chèque: '+this.operation_en_cours.banque.toUpperCase()+' /  '+this.operation_en_cours.cheque;
+}else{
+  this.mode='Espèce';
+}
     // Calcul du total des colis
     for (let i = 0; i < this.parcels.length; i++) {
-      this.total += this.parcels[i].price;
+      this.totalParcel += this.parcels[i].price;
     }
 
     // Calcul et formatage des pochettes
     for (let i = 0; i < this.pochettes.length; i++) {
-      this.total += this.pochettes[i].totalPrice;
+      this.totalPochette += this.pochettes[i].totalPrice;
       
       // Transformation des codes en libellés lisibles
       const types: { [key: string]: string } = {
@@ -80,8 +102,8 @@ export class Bordereau implements OnInit {
 
     // Suppression propre après impression
     
-      localStorage.removeItem("currentop");
-      localStorage.removeItem("op");
+     localStorage.removeItem("currentop");
+     localStorage.removeItem("op");
     
   }
 }}

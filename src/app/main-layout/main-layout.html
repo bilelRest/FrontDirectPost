@@ -1,0 +1,77 @@
+<p>main-layout works!</p>
+<div class="d-flex" id="wrapper" [class.collapsed]="isSidebarCollapsed">
+  
+  <nav id="sidebar" class="bg-white border-end shadow-sm">
+    <div class="sidebar-header px-4 py-4 d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center logo-container">
+        <button class="btn btn-light border me-2" (click)="toggleSidebar()">
+          <i class="bi bi-list"></i>
+        </button>
+        <i class="bi bi-mailbox2 text-primary fs-3 me-2 logo-icon"></i>
+        <span class="fw-bold fs-4 text-dark logo-text">DirectPost</span>
+      </div>
+    </div>
+
+    <div class="list-group list-group-flush px-3 flex-grow-1">
+      <div class="menu-category">
+        <a class="list-group-item list-group-item-action border-0 rounded-3 mb-1 d-flex align-items-center justify-content-between" 
+           data-bs-toggle="collapse" 
+           href="#menuAgent" 
+           role="button" 
+           aria-expanded="true">
+          <span>
+            <i class="bi bi-person-badge"></i>
+            <span class="ms-3 menu-text fw-bold text-uppercase" title="Agent de guichet" style="font-size: 0.75rem; letter-spacing: 0.5px;">Agent de guichet</span>
+          </span>
+          <i class="bi bi-chevron-down small menu-text transition-icon"></i>
+        </a>
+
+        <div class="collapse show" id="menuAgent">
+          <ul class="list-unstyled ps-3">
+            <li>
+              <a routerLink="/passenger" title="Déposer pour passagers" routerLinkActive="active" class="list-group-item list-group-item-action border-0 rounded-3 mb-1">
+                <i class="bi bi-grid-1x2"></i>
+                <span class="ms-3 menu-text">Dépôt passager</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/abonnee" routerLinkActive="active" title="Déposer pour abonnées" class="list-group-item list-group-item-action border-0 rounded-3 mb-1">
+                <i class="bi bi-person-check"></i>
+                <span class="ms-3 menu-text">Dépôt abonnée</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/operation" routerLinkActive="active" title="Consulter les opération" class="list-group-item list-group-item-action border-0 rounded-3 mb-1">
+                <i class="bi bi-gear-wide-connected"></i>
+                <span class="ms-3 menu-text">Opérations</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/situation" routerLinkActive="active" title="Consulter/Arréter situation" class="list-group-item list-group-item-action border-0 rounded-3 mb-1">
+                <i class="bi bi-info-circle"></i>
+                <span class="ms-3 menu-text">Situation</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer p-3 border-top">
+       <div class="d-flex align-items-center menu-text">
+         <div class="bg-primary text-white rounded-circle p-2 me-2">
+            <i class="bi bi-person small"></i>
+         </div>
+         <small class="fw-bold">Session Postale</small>
+       </div>
+    </div>
+  </nav>
+
+  <div id="page-content-wrapper" class="flex-grow-1 overflow-auto vh-100 bg-light">
+    
+
+    <div class="container-fluid p-0">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
