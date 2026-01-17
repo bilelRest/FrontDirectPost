@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <h2 class="mb-4">Clôture de Situation - Fin de Journée</h2>
 
-  <div class="row mb-4">
+  <div  class="row mb-4">
     <div class="col-md-4">
       <div class="card text-white bg-primary shadow">
         <div class="card-body">
@@ -20,7 +20,7 @@
     </div>
   </div>
 
-  <div class="card shadow">
+  <div  class="card shadow">
     <div class="card-header bg-light font-weight-bold">
       Détail des opérations
     </div>
@@ -35,7 +35,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let o of operations">
+          <tr *ngFor="let o of operations" >
             <td>{{ o.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
             <td><span class="badge bg-secondary">{{ o.formattedId }}</span></td>
             <td>
@@ -56,6 +56,8 @@
           </tr>
         </tfoot>
       </table>
+       <button *ngIf="operations.length>0" (click)="closeSituation()" class="btn btn-warning mt-3  mb-3 ms-3 w-30">Arreter la situation</button>
     </div>
+   
   </div>
 </div>

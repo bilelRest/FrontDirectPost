@@ -18,9 +18,29 @@ this.loadOps();
   operations : Operation[] = [];
   parcels:Parcel[]=[];
 pochettes:Pochette[]=[];
+closeSituation(){
+  const conf=confirm("Confirmer l\'arret de la situation ?")
+  if(!conf) return;
+  this.passengerService.situationAgen().subscribe({
+    next: data => {
+   //   this.operations = data;
+   console.log(data)
+    alert("Situation arreter avec success !")
+    console.log(data)
+    this.operations=[]
+    this.router.navigate(['/home']);
+   
+    },
+    error: err => {console.log(err)
+      console.log(err)
+          alert("Echech lors de l\'arret de la situation")
+
+    }
+  });
+}
 
 loadOps() {
-    this.passengerService.loaodAllOperations().subscribe({
+    this.passengerService.getNonClosedOperationContentByAgent().subscribe({
       next: data => {
         this.operations = data;
       },
