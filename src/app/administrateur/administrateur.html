@@ -1,0 +1,72 @@
+<div class="container-fluid py-4">
+  <div class="row g-4">
+    
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white py-3 border-bottom">
+          <h5 class="card-title mb-0 text-primary">
+            <i class="bi bi-person-plus-fill me-2"></i>Ajouter Utilisateur
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Matricule</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light"><i class="bi bi-hash"></i></span>
+              <input type="text" class="form-control" [(ngModel)]="username" name="username" placeholder="Ex: 45882">
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Mot de passe</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
+              <input type="password" class="form-control" [(ngModel)]="password" name="password" placeholder="••••••••">
+            </div>
+          </div>
+          
+          <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" (click)="addUser()">
+            <i class="bi bi-check-circle me-2"></i> Créer l'utilisateur
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white py-3 border-bottom">
+          <h5 class="card-title mb-0 text-success">
+            <i class="bi bi-shield-check me-2"></i>Accorder un Rôle
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Matricule de l'agent</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+              <input type="text" class="form-control" [(ngModel)]="username"   name="username" placeholder="Entrez le matricule">
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Nom du Rôle</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light"><i class="bi bi-tags"></i></span>
+              <select [(ngModel)]="role" class="form-select"  name="role">
+                <option value="" disabled selected>Choisir un rôle...</option>
+                <option value="ADMIN">Administrateur</option>
+                <option value="CHEF">Agent de guichet</option>
+                <option value="GUICHET">Caissier</option>
+              </select>
+            </div>
+          </div>
+          
+          <button class="btn btn-success w-100 d-flex align-items-center justify-content-center" (click)="addRole()">
+            <i class="bi bi-plus-lg me-2"></i> Affecter le rôle
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -7,6 +7,8 @@ import { Bordereau } from './bordereau/bordereau';
 import { Operations } from './operation/operations';
 import { App } from './app';
 import { MainLayout } from './main-layout/main-layout';
+import { Administrateur } from './administrateur/administrateur';
+import { Situation } from './situation/situation';
 
 export const routes: Routes = [
   // 1. Route LOGIN (Pas de sidebar ici, car AppComponent est vide)
@@ -19,6 +21,8 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'home', component: Home },
+      {path:'situation',component:Situation},
+      {path:'manage',component:Administrateur},
       { path: 'passenger', component: Passenger },
       { path: 'bordereau', component: Bordereau },
       { path: 'operation', component: Operations },

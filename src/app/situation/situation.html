@@ -1,0 +1,61 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Clôture de Situation - Fin de Journée</h2>
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-white bg-primary shadow">
+        <div class="card-body">
+          <h5 class="card-title">Nombre d'opérations</h5>
+          <p class="display-6">{{ operations.length }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-success shadow">
+        <div class="card-body">
+          <h5 class="card-title">Total Recettes</h5>
+          <p class="display-6">{{ calculateGlobalTotal() | number:'1.2-2' }} DT</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow">
+    <div class="card-header bg-light font-weight-bold">
+      Détail des opérations
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="thead-dark">
+          <tr>
+            <th>Date</th>
+            <th>Référence</th>
+            <th>Banque / Chèque</th>
+            <th class="text-end">Montant</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let o of operations">
+            <td>{{ o.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td><span class="badge bg-secondary">{{ o.formattedId }}</span></td>
+            <td>
+              <small class="text-muted" *ngIf="o.cheque">
+                {{ o.banque }} - N° {{ o.cheque }}
+              </small>
+              <span *ngIf="!o.cheque">-</span>
+            </td>
+            <td class="text-end fw-bold">{{ o.total | number:'1.2-2' }} DT</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="table-active">
+            <td colspan="3" class="text-end fw-bold">TOTAL GÉNÉRAL :</td>
+            <td class="text-end fw-bold text-success" style="font-size: 1.2rem;">
+                {{ calculateGlobalTotal() | number:'1.2-2' }} DT
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

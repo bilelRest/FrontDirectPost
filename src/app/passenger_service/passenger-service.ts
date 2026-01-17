@@ -49,7 +49,7 @@ export interface Pochette {
 
 }
   
-    
+  
    
 export interface AppUser {
   userId: number;
@@ -97,7 +97,7 @@ export interface Payment{
 export class PassengerService {
 constructor(private http: HttpClient) { }
  baserUrl='https://directpost.apirest.pro/api/operation/passenger';
-   // baserUrl='http://localhost:6161/api/operation/passenger';
+    //baserUrl='http://localhost:6161/api/operation/passenger';
      
 
 deteleOperation(op:string){
