@@ -33,7 +33,7 @@
 
 .styled-table th {
   background-color: var(--primary-color);
-  color: white;
+  color: rgb(3, 0, 0);
   text-align: left;
   padding: 12px;
 }
@@ -81,4 +81,65 @@ button {
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+}
+.company-header {
+  border-bottom: 2px solid #e67e22; /* Ligne décorative style Poste Tunisienne */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.company-name {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 0; /* Enlever les marges par défaut pour éviter l'espacement trop large */
+  color: #003366; /* Bleu institutionnel */
+}
+
+.agency-name {
+  font-size: 1rem;
+  margin: 0;
+  color: #555;
+  font-weight: 500;
+}
+
+.date-info p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Optionnel : Style spécifique pour le titre centré que nous avons vu juste avant */
+.document-title {
+  margin: 20px 0;
+}
+.header-container {
+  display: flex;
+  justify-content: space-between; /* Pousse la date à droite */
+  align-items: flex-end;        /* Aligne la date sur la ligne du bas du texte de gauche */
+  width: 100%;
+}
+
+.main-title {
+  color: #E67E22; /* Orange Poste */
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+  line-height: 1;
+}
+
+.sub-title {
+  color: #2C3E50; /* Bleu foncé/Gris */
+  font-size: 16px;
+  margin: 5px 0 0 0;
+  font-weight: bold;
+}
+
+.date-container p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.orange-line {
+  border: none;
+  border-top: 2px solid #E67E22;
+  margin-top: 5px;
 }

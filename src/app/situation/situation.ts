@@ -28,7 +28,17 @@ closeSituation(){
     alert("Situation arreter avec success !")
     console.log(data)
     this.operations=[]
-    this.router.navigate(['/home']);
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/situationprint']));
+
+      // 1. On lance l'ouverture de l'onglet
+      window.open(url, '_blank', 'noopener')
+        
+        // Rediriger vers home après un court délai
+        setTimeout(() => {
+          this.router.navigate(['/home']);
+        }, 1000);
+      
+   // this.router.navigate(['/home']);
    
     },
     error: err => {console.log(err)
@@ -43,6 +53,8 @@ loadOps() {
     this.passengerService.getNonClosedOperationContentByAgent().subscribe({
       next: data => {
         this.operations = data;
+       const situation=JSON.stringify(this.operations)
+        localStorage.setItem('situation',situation)
       },
       error: err => console.log(err)
     });

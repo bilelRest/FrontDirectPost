@@ -30,19 +30,19 @@
           <tr>
             <th>Date</th>
             <th>Référence</th>
-            <th>Banque / Chèque</th>
+            <th>Mode</th>
             <th class="text-end">Montant</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let o of operations" >
-            <td>{{ o.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ o.createdAt | date:'dd/MM/yyyy' }}</td>
             <td><span class="badge bg-secondary">{{ o.formattedId }}</span></td>
             <td>
-              <small class="text-muted" *ngIf="o.cheque">
-                {{ o.banque }} - N° {{ o.cheque }}
+              <small  class="text-muted " *ngIf="o.cheque">
+               <h6 style="color: red;"> {{ o.banque.toUpperCase() }} - N° {{ o.cheque }}</h6>
               </small>
-              <span *ngIf="!o.cheque">-</span>
+              <span *ngIf="!o.cheque"><h6 style="color: chartreuse;"> Espèce</h6></span>
             </td>
             <td class="text-end fw-bold">{{ o.total | number:'1.2-2' }} DT</td>
           </tr>

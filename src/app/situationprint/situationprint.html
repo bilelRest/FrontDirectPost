@@ -1,0 +1,64 @@
+<div class="print-container">
+  <header class="document-header">
+    <div class="header-container">
+  <div class="company-brand">
+    <h1 class="main-title">LA POSTE TUNISIENNE</h1>
+    <p class="sub-title">AGENCE RAPIDE POSTE ELBOUSTEN</p>
+  </div>
+
+  <div class="date-container">
+    <p>Date : <strong>{{ today | date:'dd/MM/yyyy HH:mm' }}</strong></p>
+  </div>
+</div>
+<hr class="orange-line">
+  </header>
+ <div class="document-title d-flex justify-content-center align-items-center">
+    <h2 class="m-0">ARRÊT DE SITUATION DE CAISSE</h2>
+</div>
+  <hr class="separator">
+
+  <section class="summary-info">
+    <p><strong>Agent :</strong> {{user}}</p>
+    <p><strong>Nombre d'opérations :</strong> {{ operations.length }}</p>
+  </section>
+
+  <table class="styled-table table-bordered">
+    <thead>
+      <tr>
+        <th>Date/Heure</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th class="text-right">Montant</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let op of operations">
+        <td>{{ op.createdAt | date:'short' }}</td>
+        <td>{{ op.formattedId || 'Opération de caisse' }}</td>
+        <td *ngIf="op.cheque != null && op.banque != null">Chèque - {{ op.banque.toUpperCase() }} - {{ op.cheque }}</td>
+        <td *ngIf="op.cheque == null && op.banque == null">Espèce</td>
+
+        <td class="text-right bold">{{ op.total | number:'1.2-2' }} DT</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" class="text-right total-label">TOTAL GÉNÉRAL</td>
+        <td class="text-right total-amount">{{ calculateGlobalTotal() | number:'1.2-2' }} DT</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <footer class="print-footer">
+    <div class="signature-block">
+      <p>Signature du Caissier</p>
+      <div class="signature-line"></div>
+    </div>
+    <div class="signature-block">
+      <p>Signature du Responsable</p>
+      <div class="signature-line"></div>
+    </div>
+  </footer>
+
+  
+</div>
