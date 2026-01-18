@@ -16,6 +16,7 @@ export class Bordereau implements OnInit {
   opid = localStorage.getItem("op") || "";
   
   operation: Operation = {
+    closed: false,
     deleted: false,
     total:0,
     opId: 0,

@@ -58,6 +58,7 @@ parcel: Parcel = {
   } as TrackingNumber,
 };
 operation_en_cour:Operation={
+  closed: false,
   deleted:false,
   opId: 0,
   total: 0,
