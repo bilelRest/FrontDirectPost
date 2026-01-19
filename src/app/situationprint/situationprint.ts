@@ -14,6 +14,8 @@ export class Situationprint implements OnInit{
 today: Date = new Date();
   ngOnInit(): void {
     const situation=localStorage.getItem('situation');
+    console.log("situation recu a print situation");
+    console.log(situation);
     if(situation){
      this.operations=  JSON.parse(situation)
     console.log(this.operations)

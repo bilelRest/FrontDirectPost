@@ -9,8 +9,8 @@
     <tbody>
         <tr *ngFor="let s of lisGuichet">
         <td>{{s.date}}</td>
-        <td>{{s.agent}}</td>
-        <td>{{s.totale}}</td>
+<td>{{s.appUser != null?s.appUser.username:'n/a'}}</td>
+        <td>{{s.total}}</td>
         
         <td>
             <button class="btn btn-success " title="Réimprimer" (click)="situationPrint(s)" ><i class="bi bi-printer"></i></button>

@@ -16,9 +16,11 @@ export interface Operation {
   pochette: any[];
 }
 export interface SessionGuichet {
-  agent: string;
-  date: string | Date;
-  totale: number;
+  id: number | null;
+  date:Date;
+  appUser:AppUser;
+  operations: Operation[];
+  total: number;
 }
 export interface Parcel {
   normal:boolean;
@@ -105,7 +107,9 @@ constructor(private http: HttpClient) { }
  baserUrl='https://directpost.apirest.pro/api/operation/passenger';
   // baserUrl='http://localhost:6161/api/operation/passenger';
      
-
+loadAllSituation():Observable<SessionGuichet[]>{
+  return this.http.get<SessionGuichet[]>(this.baserUrl+"/situation-list");
+}
 deteleOperation(op:string){
   return this.http.get(this.baserUrl+"/deleteop?op="+op);
 
