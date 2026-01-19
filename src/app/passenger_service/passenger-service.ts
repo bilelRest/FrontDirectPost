@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 export interface Operation {
+  closed:boolean,
   deleted:boolean;
   total:number;
   opId: number;
@@ -13,6 +14,11 @@ export interface Operation {
   cancelled: boolean;
   parcel: any[];
   pochette: any[];
+}
+export interface SessionGuichet {
+  agent: string;
+  date: string | Date;
+  totale: number;
 }
 export interface Parcel {
   normal:boolean;
