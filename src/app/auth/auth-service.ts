@@ -35,6 +35,8 @@ login(credentials: {username: string, password: string}) {
     const payload = JSON.parse(decodedJson);
     localStorage.setItem('username', payload.sub);
     localStorage.setItem('role', payload.role);
+    localStorage.setItem('agence', payload.agence);
+    localStorage.setItem('nomPrenom', payload.nomPrenom);
     console.log(payload)
     // 4. Retourner le subject ('sub')
     return payload.sub; 

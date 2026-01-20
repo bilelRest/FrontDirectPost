@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -8,20 +8,33 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './main-layout.css',
 })
 export class MainLayout implements OnInit{
+  constructor(private cdr: ChangeDetectorRef) { }
+  isSidebarCollapsed = true;
   ngOnInit(): void {
+//this. username=localStorage.getItem('username');
+if(localStorage.getItem('role')=='ROLE_ADMIN')
+  this. role='Administrateur';
+else if(localStorage.getItem('role')=='ROLE_AGENT')
+  this. role='Guichetier';
+else if(localStorage.getItem('role')=='ROLE_CHEF')
+  this. role='Chef d\'agence';
 
-this. username=localStorage.getItem('username');
-  this. role=localStorage.getItem('role');
+  this. agence=localStorage.getItem('agence');
+  this. nomPrenom=localStorage.getItem('nomPrenom');
+
   }
   
 username:string | null='';
-role:string | null=''
- isSidebarCollapsed = true; // État de la sidebar
+role:string | null='';
+agence:string | null='';
+nomPrenom:string | null='';
+  // État de la sidebar
 logout(){
   localStorage.clear();
   window.location.reload();
 }
   toggleSidebar() {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    this.cdr.detectChanges();
   }
 }

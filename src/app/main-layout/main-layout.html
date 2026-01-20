@@ -3,15 +3,14 @@
   <nav id="sidebar" class="bg-light border-end shadow-sm">
     <div class="sidebar-header px-4 py-4 d-flex align-items-center justify-content-between">
       <div class="d-flex align-items-center logo-container">
-        <button class="btn btn-light border me-2" (click)="toggleSidebar()">
-          <i class="bi bi-list"></i>
-        </button>
+        <button type="button" class="btn btn-sm btn-light border me-2" (click)="toggleSidebar()">
+<i class="bi bi-layout-text-sidebar-reverse"></i>        </button>
         <i class="bi bi-mailbox2 text-primary fs-3 me-2 logo-icon"></i>
         <span class="fw-bold fs-4 text-dark logo-text">DirectPost</span>
       </div>
     </div>
 
-    <div class="list-group list-group-flush px-3 flex-grow-1 overflow-auto">
+    <div class="list-group list-group-flush px-3 flex-grow-1 overflow-auto custom-scrollbar">
       
       <div class="menu-category mb-2">
         <a class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center justify-content-between" 
@@ -24,12 +23,32 @@
         </a>
         <div class="collapse show" id="menuAgent">
           <ul class="list-unstyled ps-3">
-            <li><a routerLink="/passenger" routerLinkActive="active" class="list-group-item border-0 rounded-3 mb-1"><i class="bi bi-grid-1x2"></i><span class="ms-3 menu-text">Dépôt passager</span></a></li>
-            <li><a  routerLinkActive="active" class="list-group-item border-0 rounded-3 mb-1"><i class="bi bi-person-check"></i><span class="ms-3 menu-text">Dépôt abonnée</span></a></li>
-            <li><a routerLink="/operation" routerLinkActive="active" class="list-group-item border-0 rounded-3 mb-1"><i class="bi bi-gear-wide-connected"></i><span class="ms-3 menu-text">Opérations</span></a></li>
-                      <li><a routerLink="/situation" routerLinkActive="active" class="list-group-item border-0 rounded-3 mb-1"><i class="bi bi-currency-exchange"></i><span class="ms-3 menu-text">Situation en cours</span></a></li>
-                      <li><a routerLink="/history" routerLinkActive="active" class="list-group-item border-0 rounded-3 mb-1"><i class="bi bi-currency-exchange"></i><span class="ms-3 menu-text">Historique situation</span></a></li>
+            <li><a routerLink="/passenger" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-grid-1x2"></i><span class="ms-3 menu-text">Dépôt passager</span></a></li>
+            <li><a routerLink="/subscriber" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-person-check"></i><span class="ms-3 menu-text">Dépôt abonnée</span></a></li>
+            <li><a routerLink="/operation" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-gear-wide-connected"></i><span class="ms-3 menu-text">Opérations</span></a></li>
+            <li><a routerLink="/situation" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-currency-exchange"></i><span class="ms-3 menu-text">Situation en cours</span></a></li>
+                  <li><a routerLink="/history" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-clock-history"></i><span class="ms-3 menu-text">Historique situation</span></a></li>
 
+          </ul>
+        </div>
+      </div>
+
+      <div class="menu-category mb-2">
+        <a class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center justify-content-between" 
+           data-bs-toggle="collapse" href="#menuChef" role="button">
+          <span>
+            <i class="bi bi-briefcase"></i>
+            <span class="ms-3 menu-text fw-bold text-uppercase small-text">Chef d'agence</span>
+          </span>
+          <i class="bi bi-chevron-down small menu-text transition-icon"></i>
+        </a>
+        <div class="collapse" id="menuChef">
+          <ul class="list-unstyled ps-3">
+            <li><a routerLink="/validation" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-check-circle"></i><span class="ms-3 menu-text">Validation</span></a></li>
+           <li><a routerLink="/activity" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-activity"></i><span class="ms-3 menu-text">Activité</span></a></li>
+
+            <li><a routerLink="/manage-subscribers" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-people"></i><span class="ms-3 menu-text">Gestion abonnées</span></a></li>
+            <li><a routerLink="/invoices" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-file-earmark-text"></i><span class="ms-3 menu-text">Factures</span></a></li>
           </ul>
         </div>
       </div>
@@ -45,48 +64,28 @@
         </a>
         <div class="collapse" id="menuAdmin">
           <ul class="list-unstyled ps-3">
-            <li><a routerLink="/manage" routerLinkActive="active" class="list-group-item border-0 rounded-3 mb-1"><i class="bi bi-people"></i><span class="ms-3 menu-text">Utilisateurs</span></a></li>
-            <li><a routerLink="/roles" routerLinkActive="active" class="list-group-item border-0 rounded-3 mb-1"><i class="bi bi-key"></i><span class="ms-3 menu-text">Permissions</span></a></li>
+            <li><a routerLink="/manage" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-people"></i><span class="ms-3 menu-text">Utilisateurs</span></a></li>
+            <li><a routerLink="/roles" routerLinkActive="active" class="nav-submenu-item"><i class="bi bi-key"></i><span class="ms-3 menu-text">Permissions</span></a></li>
           </ul>
         </div>
-      </div>
-
-      <div class="menu-category mb-2">
-        <a class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center justify-content-between" 
-           data-bs-toggle="collapse" href="#menuStats" role="button">
-          <span>
-            <i class="bi bi-bar-chart"></i>
-            <span class="ms-3 menu-text fw-bold text-uppercase small-text">Rapports</span>
-          </span>
-          <i class="bi bi-chevron-down small menu-text transition-icon"></i>
-        </a>
-        <div class="collapse" id="menuStats">
-          <ul class="list-unstyled ps-3">
-            <li><a routerLink="/stats-ventes" class="list-group-item border-0 rounded-3 mb-1"><i class="bi bi-graph-up"></i><span class="ms-3 menu-text">Ventes</span></a></li>
-            <li><a routerLink="/stats-trafic" class="list-group-item border-0 rounded-3 mb-1"><i class="bi bi-truck"></i><span class="ms-3 menu-text">Trafic Postal</span></a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="menu-category mb-2">
-        <a routerLink="/settings" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center">
-          <i class="bi bi-sliders"></i>
-          <span class="ms-3 menu-text fw-bold text-uppercase small-text">Paramètres</span>
-        </a>
       </div>
 
     </div>
 
     <div class="sidebar-footer p-3 border-top bg-light">
-       <div class="d-flex align-items-center menu-text">
-         <div class="bg-primary text-white rounded-circle p-2 me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-            <i class="bi bi-person small"></i>
-         </div>
-         <div class="d-flex flex-column">
-           <small class="fw-bold text-dark">Session Postale</small>
-           <small class="text-muted" style="font-size: 0.7rem;">{{username}} -- {{role}}</small>
-           <button class="btn btn-warning" (click)="logout()" style="font-size: 0.7rem;">Déconnexion</button>
-         </div>
+       <div class="d-flex align-items-center profile-section">
+          <div class="bg-primary text-white rounded-circle p-2 me-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+             <i class="bi bi-person"></i>
+          </div>
+          <div class="d-flex flex-column flex-grow-1 overflow-hidden info-text">
+            <span class="fw-bold text-dark text-truncate small">{{username}}</span>
+            <span class="text-muted text-truncate" style="font-size: 0.7rem;">{{role}}</span>
+            <span class="text-muted text-truncate" style="font-size:0.7rem">{{nomPrenom}}</span>
+            <span class="text-muted text-truncate" style="font-size:0.7rem">{{agence}}</span>
+          </div>
+          <button class="btn btn-outline-danger btn-sm border-0 ms-1" (click)="logout()" title="Déconnexion">
+            <i class="bi bi-power"></i>
+          </button>
        </div>
     </div>
   </nav>

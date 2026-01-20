@@ -1,9 +1,8 @@
-/* Animation de transition */
-#sidebar, #page-content-wrapper, .menu-text, .logo-text {
+/* Transitions fluides */
+#sidebar, #page-content-wrapper, .menu-text, .logo-text, .info-text {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Sidebar Largeur normale */
 #sidebar {
   width: 280px;
   min-width: 280px;
@@ -12,30 +11,17 @@
   flex-direction: column;
 }
 
-/* --- ÉTAT RÉDUIT (COLLAPSED) --- */
-
-/* On réduit la largeur de la sidebar */
+/* ÉTAT RÉDUIT */
 #wrapper.collapsed #sidebar {
   width: 80px;
   min-width: 80px;
 }
 
-/* On cache le texte du logo et des menus */
-#wrapper.collapsed .menu-text,
-#wrapper.collapsed .logo-text,
-#wrapper.collapsed small {
-  display: none;
-}
-
-/* On centre les icônes quand c'est réduit */
-#wrapper.collapsed .list-group-item {
-  text-align: center;
-  padding: 1rem 0;
-}
-
-#wrapper.collapsed .list-group-item i {
-  margin: 0 !important;
-  font-size: 1.4rem;
+#wrapper.collapsed .menu-text, 
+#wrapper.collapsed .logo-text, 
+#wrapper.collapsed .info-text,
+#wrapper.collapsed .bi-chevron-down {
+  display: none !important;
 }
 
 #wrapper.collapsed .sidebar-header {
@@ -43,50 +29,51 @@
   padding: 1.5rem 0 !important;
 }
 
-#wrapper.collapsed .logo-container i {
+#wrapper.collapsed .logo-container button {
   margin: 0 !important;
 }
 
-/* Style de l'item actif */
-.list-group-item.active {
-  background-color: rgba(13, 110, 253, 0.08) !important;
-  color: #0d6efd !important;
-  border-left: 4px solid #0d6efd !important;
-}
-@media print {
-  #sidebar { display: none ; }
-  #wrapper{display : none;}
-}
-/* Style du titre de catégorie */
-.menu-category .list-group-item {
-  color: #495057;
-  cursor: pointer;
+/* Styles des liens de sous-menu */
+.nav-submenu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+  color: #6c757d;
+  border-radius: 8px;
+  margin-bottom: 2px;
+  font-size: 0.9rem;
+  transition: background 0.2s;
 }
 
-/* Animation de la flèche */
+.nav-submenu-item:hover {
+  background-color: #f8f9fa;
+  color: #0d6efd;
+}
+
+/* Style de l'item actif */
+.nav-submenu-item.active {
+  background-color: rgba(13, 110, 253, 0.1) !important;
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+
+/* Animation rotation flèche */
 [aria-expanded="true"] .bi-chevron-down {
   transform: rotate(180deg);
-  transition: transform 0.3s;
 }
 
-[aria-expanded="false"] .bi-chevron-down {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
+/* Scrollbar discrète */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d1d1;
+  border-radius: 10px;
 }
 
-/* Masquer les flèches quand la barre est réduite */
-#wrapper.collapsed .bi-chevron-down {
-  display: none;
-}
-
-/* Ajustement pour l'impression (Corrigé) */
+/* Impression */
 @media print {
-  #sidebar, .navbar, .btn {
-    display: none !important;
-  }
-  #page-content-wrapper {
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
+  #sidebar { display: none !important; }
+  #page-content-wrapper { width: 100% !important; margin: 0 !important; }
 }

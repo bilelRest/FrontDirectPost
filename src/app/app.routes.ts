@@ -11,6 +11,8 @@ import { Administrateur } from './administrateur/administrateur';
 import { Situation } from './situation/situation';
 import { Situationprint } from './situationprint/situationprint';
 import { History } from './history/history';
+import { Validation } from './validation/validation';
+import { Activity } from './activity/activity';
 
 
 export const routes: Routes = [
@@ -26,6 +28,8 @@ export const routes: Routes = [
       { path: 'home', component: Home },
       {path:'history',component:History},
       {path:'situationprint',component:Situationprint},
+      {path:'validation',component:Validation},
+      {path:'activity',component:Activity},
       {path:'situation',component:Situation},
       {path:'manage',component:Administrateur},
       { path: 'passenger', component: Passenger },

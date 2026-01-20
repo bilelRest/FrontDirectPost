@@ -60,9 +60,11 @@ export interface Pochette {
   
    
 export interface AppUser {
-  userId: number;
   username: string;
+  nomPrenom:string;
+  password: string;
   email: string;
+  agence:string;
   // On ne met généralement pas le password dans l'interface frontend pour la sécurité
   appRoles: []; 
 }
@@ -99,16 +101,22 @@ export interface Payment{
   banque:string
   cheque:string
 }
+
 @Injectable({
   providedIn: 'root',
 })
 export class PassengerService {
 constructor(private http: HttpClient) { }
  baserUrl='https://directpost.apirest.pro/api/operation/passenger';
-  // baserUrl='http://localhost:6161/api/operation/passenger';
-     
+   //baserUrl='http://localhost:6161/api/operation/passenger';
+    // urlChef='http://localhost:6161/api/chef';
+     urlChef='https://directpost.apirest.pro/api/chef'
+
 loadAllSituation():Observable<SessionGuichet[]>{
   return this.http.get<SessionGuichet[]>(this.baserUrl+"/situation-list");
+}
+loadAllSituationChef():Observable<SessionGuichet[]>{
+  return this.http.get<SessionGuichet[]>(this.urlChef+"/situationchef");
 }
 deteleOperation(op:string){
   return this.http.get(this.baserUrl+"/deleteop?op="+op);
