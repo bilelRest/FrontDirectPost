@@ -7,7 +7,7 @@ import { BehaviorSubject, tap } from 'rxjs';
 })
 export class AuthService {
   constructor(private http:HttpClient) { }
- baseurl = 'https://directpost.apirest.pro/api/auth';
+baseurl = 'https://directpost.apirest.pro/api/auth';
  // baseurl = 'http://localhost:6161/api/auth';
   private isRefreshing = false;
 private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);

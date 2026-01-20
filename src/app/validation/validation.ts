@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Operation, PassengerService, SessionGuichet } from '../passenger_service/passenger-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './validation.css',
 })
 export class Validation {
-constructor(private passenger: PassengerService,private router:Router) { }
+constructor(private passenger: PassengerService,private router:Router,private cdr:ChangeDetectorRef) { }
 
   operations: Operation[] = [];
   lisGuichet: SessionGuichet[] = [];
@@ -36,12 +36,23 @@ const url = this.router.serializeUrl(this.router.createUrlTree(['/situationprint
 
   }
   ValiderChefSituation(){
-    
-  }
+    this.passenger.setclotured().subscribe({
+      next: (data) => {
+        this.lisGuichet = [];
+        this.tosession=0
+        alert("Journée cloturé avec success")
+        this.cdr.detectChanges();
+        this.loadops();
+        console.log("tous les situation recu");   
+  }})}
+  tosession=0;
 loadops() {
   this.passenger.loadAllSituationChef().subscribe({
     next: (data) => {
       this.lisGuichet = data;
+      for(let i=0;i<this.lisGuichet.length;i++){
+        this.tosession+=this.lisGuichet[i].total;
+      }
       console.log("tous les situation recu");
 
       console.log(data);

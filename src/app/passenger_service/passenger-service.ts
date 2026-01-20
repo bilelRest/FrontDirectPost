@@ -108,8 +108,8 @@ export interface Payment{
 export class PassengerService {
 constructor(private http: HttpClient) { }
  baserUrl='https://directpost.apirest.pro/api/operation/passenger';
-   //baserUrl='http://localhost:6161/api/operation/passenger';
-    // urlChef='http://localhost:6161/api/chef';
+ //baserUrl='http://localhost:6161/api/operation/passenger';
+   // urlChef='http://localhost:6161/api/chef';
      urlChef='https://directpost.apirest.pro/api/chef'
 
 loadAllSituation():Observable<SessionGuichet[]>{
@@ -122,6 +122,10 @@ deteleOperation(op:string){
   return this.http.get(this.baserUrl+"/deleteop?op="+op);
 
 }
+setclotured():Observable<SessionGuichet[]>{
+  return this.http.get<SessionGuichet[]>(this.urlChef+"/setclotured");
+}
+
 situationAgen(){
   return this.http.get(this.baserUrl+"/situation");
 }
