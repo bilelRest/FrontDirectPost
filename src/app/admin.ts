@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 })
 export class Admin {
   constructor(private http:HttpClient){}
- //baserUrl='https://directpost.apirest.pro/api/admin';
-   baserUrl='http://localhost:6161/api/admin';  
+ baserUrl='https://directpost.apirest.pro/api/admin';
+  // baserUrl='http://localhost:6161/api/admin';  
    addUser(appUser:AppUser){
     return this.http.post<AppUser>(this.baserUrl+"/adduser",appUser);
    }

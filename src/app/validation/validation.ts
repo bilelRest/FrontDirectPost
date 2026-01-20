@@ -50,6 +50,7 @@ loadops() {
   this.passenger.loadAllSituationChef().subscribe({
     next: (data) => {
       this.lisGuichet = data;
+      
       for(let i=0;i<this.lisGuichet.length;i++){
         this.tosession+=this.lisGuichet[i].total;
       }
